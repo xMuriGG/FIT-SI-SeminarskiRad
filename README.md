@@ -2,7 +2,7 @@
 
 The project was made as part of "Software engineering" course at faculty of information technologies, Mostar.
 
-Topic: Education center 
+Topic: Education center<br>
 Course: Management and information systems
 
 The Education Center application is a web based application to support the work of education center. The application is intended for staff of the Center in order to speed up and improve business processes, all in order to provide better services to its clients.

@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CZE.Data.Models
+{
+    public class Osoba
+    {
+        public int OsobaID { get; set; }
+        public int Godine { get; set; }
+        public String Ime { get; set; }
+    }
+}

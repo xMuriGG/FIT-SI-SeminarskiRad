@@ -1,0 +1,94 @@
+﻿@model CZE.Web.Areas.Direktor.Models.UgovorZaposlenjaCreateVM
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+@section HeadLinks
+{
+
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/AutocompleteComboBox.css" rel="stylesheet" />
+}
+
+<h2>Ugovor create</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @Html.HiddenFor(model => model.UgovorZaposlenjaID)
+    <div class="form-horizontal">
+        <div class="form-group">
+        @Html.LabelFor(model => model.ZaposlenikID, "Zaposlenik", new { @class = "control-label col-md-3" })
+        <div class="ui-widget col-md-3">
+            @Html.DropDownListFor(model => model.ZaposlenikID, Model.ZaposleniciDDL,"", new { @class = "form-control combobox" })
+            @Html.ValidationMessageFor(model => model.ZaposlenikID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.PozicijaKompanijeID, "Pozicija", new { @class = "control-label col-md-3" })
+        <div class="ui-widget col-md-3">
+            @Html.DropDownListFor(model => model.PozicijaKompanijeID, Model.PozicijeKompanijeDDL, "Odaberi poziciju", new { @class = "form-control combobox" })
+            @Html.ValidationMessageFor(model => model.PozicijaKompanijeID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Period, new { @class = "control-label col-md-3" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.Period, new { htmlAttributes = new { @class = "form-control", title = "Period se unosi u mjesecima." } })
+            @Html.ValidationMessageFor(model => model.Period, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Koeficijent, new { @class = "control-label col-md-3" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.Koeficijent, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Koeficijent, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.DatumPocetkaUgovora, new { @class = "control-label col-md-3" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.DatumPocetkaUgovora, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DatumPocetkaUgovora, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UploadFile, new { @class = "control-label col-md-3" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(model => model.UploadFile, new { type = "file" })
+            @Html.ValidationMessageFor(model => model.UploadFile, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.OpisPosla, new { @class = "control-label col-md-3" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.OpisPosla, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OpisPosla, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class=" col-md-10">
+                <input class="btn btn-default" type="submit" value="Snimi" />
+            </div>
+        </div>
+    </div>
+}
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/MojeSkripte/AutocompleteComboBox.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // da bi validacija radila jer JQ-UI sakrije pravi element
+        $(document).ready(function () {
+            var validator = $("Form").data('validator');
+            validator.settings.ignore = "";
+        });
+
+    </script>
+}

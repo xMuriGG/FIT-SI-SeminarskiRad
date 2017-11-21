@@ -1,0 +1,150 @@
+﻿@model CZE.Web.Models.DashboardDataVM
+@{
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+@section HeadLinks
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+}
+<h2>Dashboard</h2>
+<hr />
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+<div class="row">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-comments fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.BrojOsoba</div>
+                        <div>Osoba</div>
+                    </div>
+                </div>
+            </div>
+            <a href="~/Osoba//Osoba/PrikazOsoba">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-comments fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.BrojKandidata</div>
+                        <div>Kandidata</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-comments fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.BrojZaposlenika</div>
+                        <div>Zaposlenika</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="brKandidataChart">
+    @{Html.RenderAction("BrojKandidataChart");}
+</div>
+<div id="uplKandidataChart">
+    @{Html.RenderAction("UplateKandidataChart");}
+</div>
+
+
+
+@section JavaScriptFiles
+{
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            SetChartBrojKandidata();
+            SetChartUplateKandidata();
+        });
+
+        function SetChartBrojKandidata() {
+            $("#godinaDDL_br").change(function () {
+                $("#brKandidataForm").submit();
+            });
+            var charData1 = JSON.parse($("#charData1").val());
+            var char1 = new Morris.Bar({
+
+                element: 'brojKandidataChart',
+                data: Object(charData1),
+                smooth: false,
+                xkey: 'xDatum',
+                ykeys: ['yCount'],
+                labels: ['Broj novih kandidata'],
+                xLabels: "month",
+                hideHover: 'auto'
+            });
+        };
+
+        function SetChartUplateKandidata() {
+            $("#godinaDDL_upl").change(function () {
+                $("#uplKandidataForm").submit();
+            });
+            var charData2 = JSON.parse($("#charData2").val());
+            var char2 = new Morris.Line({
+
+                element: 'uplateKandidataChart',
+                data: Object(charData2),
+                smooth: false,
+                xkey: 'xDatum',
+                ykeys: ['yKolicina'],
+                labels: ['Uplačena količina(KM)'],
+                xLabels: "month",
+                lineColors:["green"],
+                hideHover: 'auto'
+            });
+        };
+
+    </script>
+}

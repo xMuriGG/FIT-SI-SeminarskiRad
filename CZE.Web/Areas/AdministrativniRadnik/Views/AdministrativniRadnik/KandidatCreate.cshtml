@@ -1,0 +1,55 @@
+﻿@model CZE.Web.Areas.Osoba.Models.OsobaDetailsVM
+@{
+    ViewBag.Title = "KandidatCreate";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+<h2>Kandidat create</h2>
+<hr />
+<div class=" panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Osoba</h3>
+    </div>
+    <div class="panel-body" style="background-color:#636363; color:white">
+        @{Html.RenderPartial("~/Areas/Osoba/Views/Osoba/_OsobaDetails.cshtml", Model);}
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Kandidat</h3>
+    </div>
+    <div class="panel-body">
+        @using (@Html.BeginForm())
+        {
+            <div class="form-horizontal">
+                @Html.HiddenFor(model => model.OsobaID)
+                @Html.HiddenFor(model => model.Ime)
+                @Html.HiddenFor(model => model.Prezime)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Kandidat.DatumUpisa, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.Kandidat.DatumUpisa, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Kandidat.DatumUpisa, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Kandidat.Biljeske, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Kandidat.Biljeske, new { htmlAttributes = new { @class = "form-control", rows = "5" } })
+                        @Html.ValidationMessageFor(model => model.Kandidat.Biljeske, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        <div class="panel-footer">
+            <input type="submit" value="Snimi" class="btn btn-default" />
+        </div>
+        }
+    </div>
+</div>
+@Html.ActionLink(" ", "PromoteOsobeMain", null, new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

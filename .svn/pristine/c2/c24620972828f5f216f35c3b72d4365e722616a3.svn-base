@@ -1,0 +1,12 @@
+﻿<li>
+    <a href="#"><i class="fa fa-group fa-fw"></i> Osoba<span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="~/Osoba//Osoba/Create">Create</a>
+        </li>
+        <li>
+            <a href="~/Osoba//Osoba/PrikazOsoba">Prikaz osoba</a>
+        </li>
+    </ul>
+    <!-- /.nav-second-level -->
+</li>

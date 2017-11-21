@@ -1,0 +1,163 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using CZE.Web.Areas.Osoba.Models;
+using CZE.Web.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
+using PagedList;
+using PagedList.Mvc;
+namespace CZE.Web.Areas.Osoba.Controllers
+{
+    [Autorizacija(UlogeKorisnika.Kandidat, UlogeKorisnika.Administrativni_Radnik, UlogeKorisnika.Direktor, UlogeKorisnika.Administrator)]
+
+    public class OsobaController : Controller
+    {
+        private CZEContext db = new CZEContext();
+        public ActionResult Create()
+        {
+            string s = DateTime.Now.ToShortDateString();
+            OsobaCreateVM osobaVM = new OsobaCreateVM();
+
+            osobaVM.DatumRodjenja = DateTime.Now;
+            osobaVM.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View(osobaVM);
+        }
+        [HttpPost]
+        public ActionResult Create(OsobaCreateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    db.Osobe.Add(model.ToOsoba());
+                    db.SaveChanges();
+                    TempData["InfoMessage"] = new InfoMessage("Osoba "+model.Ime+" "+model.Prezime+" uspješno dodana.", InfoMessageType.success);
+                    return RedirectToAction("PrikazOsoba");
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError(String.Empty, "Došlo je do greške prilikom validacije, provjeriti unesena polja.");
+                }
+            }
+            model.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View(model);
+        }
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Data.Models.Osoba osoba = db.Osobe.Find(id);
+            if (osoba == null)
+            {
+                return HttpNotFound();
+            }
+            OsobaCreateVM osobaVM = new OsobaCreateVM(osoba);
+            osobaVM.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View("Create", osobaVM);
+        }
+        [HttpPost]
+        public ActionResult Edit(OsobaCreateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    db.BrojeviTelefona.RemoveRange(db.BrojeviTelefona.Where(w => w.OsobaID == model.OsobaID).ToList());
+                    db.BrojeviTelefona.AddRange(model.ToOsoba().BrojeviTelefona);
+                    model.BrojeviTelefona = null;
+                    db.Entry(model.ToOsoba()).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["InfoMessage"] = new InfoMessage("Osoba " + model.Ime + " " + model.Prezime + " uspješno editovana.", InfoMessageType.success);
+
+                    return RedirectToAction("PrikazOsoba");
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError(String.Empty, "Došlo je do greške prilikom validacije, provjeriti unesena polja.");
+                }
+            }
+            model.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View(model);
+        }
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Data.Models.Osoba osoba = db.Osobe.Find(id);
+            if (osoba == null)
+            {
+                return HttpNotFound();
+            }
+            return View(new OsobaDetailsVM(osoba));
+        }
+        public ActionResult PrikazOsoba(string searchTerm, int? page)
+        {
+            if (TempData["InfoMessage"] != null)
+            {
+                ViewBag.InfoMessage = (Helper.InfoMessage)TempData["InfoMessage"];
+            }
+            List<OsobaLessDetailsVM> osobe;
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                osobe = db.Osobe.ToList().Select(s => new OsobaLessDetailsVM(s)).ToList();
+            }
+            else
+            {
+                osobe = db.Osobe.Where(x => (x.Ime + " " + x.Prezime).Contains(searchTerm))
+                    .ToList()
+                    .Select(s => new OsobaLessDetailsVM(s)).ToList();
+            }
+
+            return View(osobe.ToPagedList(page ?? 1, 10));
+        }
+        public JsonResult SearchFunctionality(string term)
+        {
+            List<string> imena = db.Osobe
+                .Where(x => x.Ime.StartsWith(term) || x.Prezime.StartsWith(term))
+                .Select(s => s.Ime + " " + s.Prezime)
+                .ToList();
+            return Json(imena, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Data.Models.Osoba osoba = db.Osobe.Find(id);
+            if (osoba == null)
+            {
+                return HttpNotFound();
+            }
+            try
+            {
+                db.Osobe.Remove(osoba);
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Osoba '" + osoba.Ime + " " + osoba.Prezime + "' uspješno obrisana.", InfoMessageType.success);
+            }
+            catch (Exception)
+            {
+                TempData["InfoMessage"] = new InfoMessage("Osobu '" + osoba.Ime + " " + osoba.Prezime + "' nije moguće obrisati: Osoba je zaposlenik ili kandidat.", InfoMessageType.danger);
+            }
+
+            return RedirectToAction("PrikazOsoba");
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

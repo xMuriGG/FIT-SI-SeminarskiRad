@@ -1,0 +1,55 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.GrupaDetailsVM
+@{
+    ViewBag.Title = "Details";
+    Layout = null;
+}
+
+<div class="panel panel-green">
+    <div class="panel-heading">
+        Grupa details
+    </div>
+    <div class="panel-body">
+
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Tip kursa</a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div>
+                            @{Html.RenderPartial("~/Areas/AdministrativniRadnik/Views/KursTip/_KursTipDetails.cshtml", Model.KursTip);}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Kurs</a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        @{Html.RenderPartial("~/Areas/AdministrativniRadnik/Views/Kursevi/_KursDetails.cshtml", Model.Kurs);}
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Grupa</a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        @{Html.RenderPartial("_GrupaDetails", Model);}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+@section HeadLinks
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+}
+<h2>Dashboard</h2>
+<hr />
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+<div class="row">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-comments fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@((int)ViewBag.Osoba)</div>
+                        <div>Osoba</div>
+                    </div>
+                </div>
+            </div>
+            <a href="~/Osoba//Osoba/PrikazOsoba">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-comments fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@((int)ViewBag.Kandidata)</div>
+                        <div>Kandidata</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-comments fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@((int)ViewBag.Zaposlenika)</div>
+                        <div>Zaposlenika</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-primary  col-sm-12">
+        <div class="panel-heading text-center">Broj novih kandidata po mjesecima</div>
+        <br />
+        <div class="col-sm-3">
+            @using (Html.BeginForm())
+            {
+                @Html.DropDownList("brKandidata", (List<SelectListItem>)ViewBag.GodineChart, new { @class = "form-control", onchange = @"form.submit();" })
+
+            }
+        </div>
+        <br />
+        <br />
+        <div class="panel-body graph-container">
+            <div id="myfirstchart" style="height: 250px;"></div>
+        </div>
+    </div>
+
+</div>
+
+@section JavaScriptFiles
+{
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script>
+        new Morris.Line({
+
+            element: 'myfirstchart',
+            data:@(Html.Raw(System.Web.Helpers.Json.Encode(ViewBag.BrojKandidataChart))),
+            smooth:false,
+            xkey: 'Mjesec',
+            ykeys: ['Count'],
+            labels: ['Broj novih kandidata'],
+            xLabels:"month",
+            hideHover: 'auto'
+
+        });
+    </script>
+}

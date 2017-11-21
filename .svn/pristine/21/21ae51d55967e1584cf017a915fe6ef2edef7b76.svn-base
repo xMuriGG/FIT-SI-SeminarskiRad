@@ -1,0 +1,48 @@
+﻿@model CZE.Data.Models.Kurs
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Kurs details
+    </div>
+    <div class="panel-body">
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Tip kursa</a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div>
+                            @{Html.RenderPartial("~/Areas/AdministrativniRadnik/Views/KursTip/_KursTipDetails.cshtml", Model.KursTip);}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Kurs</a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        @{Html.RenderPartial("_KursDetails", Model);}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <p>
+            @Ajax.ActionLink(" ", "Edit",
+                            routeValues: new { id = Model.KursID },
+                         ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikaz" },
+                            htmlAttributes: new { @class = "glyphicon glyphicon-edit", style = "font-size:20px", title = "Edit" })
+            @Ajax.ActionLink(" ", "Prikaz", "Kursevi",
+                            routeValues: new { id = Model.KursTipID },
+                      ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikaz", OnSuccess = "SetTable" },
+                         htmlAttributes: new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+        </p>
+    </div>
+</div>

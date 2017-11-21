@@ -1,0 +1,30 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.GrupaDetailsVM
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.Naziv)</dt>
+        <dd>@Html.DisplayFor(model => model.Naziv)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Pocetak)</dt>
+        <dd>@Html.DisplayFor(model => model.Pocetak)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Kraj)</dt>
+        <dd>@Html.DisplayFor(model => model.Kraj)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Aktivna)</dt>
+        <dd>@Html.DisplayFor(model => model.Aktivna)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.ImePrezimeZaposlenika)</dt>
+        <dd>@Html.DisplayFor(model => model.ImePrezimeZaposlenika)</dd>
+    </dl>
+</div>
+<p>
+    @Ajax.ActionLink(" ", "Edit",
+        routeValues: new { id = Model.GrupaID },
+        ajaxOptions: new AjaxOptions { UpdateTargetId = "grupaPrikaz" },
+        htmlAttributes: new { @class = "glyphicon glyphicon-edit", style = "font-size:20px", title = "Edit" })
+    @Ajax.ActionLink(" ", "Prikaz", "Grupa",
+                routeValues: new { kursId = Model.KursID },
+        ajaxOptions: new AjaxOptions { UpdateTargetId = "grupaPrikaz", OnSuccess = "SetTableGrupa" },
+        htmlAttributes: new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+</p>

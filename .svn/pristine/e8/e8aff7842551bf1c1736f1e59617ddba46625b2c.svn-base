@@ -1,0 +1,16 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursVM
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Kurs create</h2>
+<hr />
+@{Html.RenderPartial("_KursEdit", Model);}
+
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

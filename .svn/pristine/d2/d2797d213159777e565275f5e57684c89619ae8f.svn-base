@@ -1,0 +1,89 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Web.Areas.Direktor.Models;
+using System.IO;
+namespace CZE.Web.Areas.Direktor.Controllers
+{
+    public class UgovorZaposlenjaController : Controller
+    {
+        CZEContext db = new CZEContext();
+        // GET: Direktor/UgovorZaposlenja
+        public ActionResult Create()
+        {
+            List<PozicijaKompanije> pozicije = db.PozicijeKompanije.ToList();
+            List<Zaposlenik> zaposlenici = db.Zaposlenici.ToList();
+
+            return View(new UgovorZaposlenjaCreateVM(pozicije, zaposlenici));
+        }
+        [HttpPost]
+        public ActionResult Create(UgovorZaposlenjaCreateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Status = true;
+                db.Ugovori.Add(model.ToUgovorZaposlenja());
+                db.SaveChanges();
+            }
+            else
+            {
+                List<PozicijaKompanije> pozicije = db.PozicijeKompanije.ToList();
+                List<Zaposlenik> zaposlenici = db.Zaposlenici.ToList();
+                model.PozicijeKompanijeDDL = new SelectList(pozicije, "PozicijaKompanijeID", "Naziv", model.PozicijaKompanijeID);
+                model.ZaposleniciDDL = zaposlenici.Select(s => new SelectListItem
+                {
+                    Value = s.ZaposlenikID.ToString(),
+                    Text = s.Osoba.Ime + " " + s.Osoba.Prezime + " [" + (DateTime.Now.Year - s.Osoba.DatumRodjenja.Year) + "][" + s.BrojRadneKnjizice + "",
+                    Selected = s.ZaposlenikID == model.ZaposlenikID
+                }).ToList();
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+        public ActionResult Prikaz()
+        {
+            var anonimus = db.Ugovori.Select(s => new
+            {
+                s.UgovorZaposlenjaID,
+                s.PozicijaKompanije,
+                s.Zaposlenik,
+                s.DatumPocetkaUgovora,
+                s.Period,
+                s.Status
+            });
+            List<UgovorZaposlenja> u = anonimus.AsEnumerable().Select(s => new UgovorZaposlenja(){
+                UgovorZaposlenjaID=s.UgovorZaposlenjaID,
+                PozicijaKompanije=s.PozicijaKompanije,
+                Zaposlenik=s.Zaposlenik,
+                DatumPocetkaUgovora=s.DatumPocetkaUgovora,
+                Period=s.Period,
+                Status = s.Status
+            }).ToList();
+
+            return View(u);
+        }
+        public ActionResult Download(int id)
+        {
+            //UgovorZaposlenja u = db.Ugovori.Find(id);          
+            //return File(u.UgovorFile,u.UgovorFileType,u.UgovorFileName);
+            var anonimus = db.Ugovori.Where(x=>x.UgovorZaposlenjaID==id).Select(s => new {s.UgovorFile,s.UgovorFileType,s.UgovorFileName });
+            byte[] file = anonimus.Select(s => s.UgovorFile).SingleOrDefault();
+            string name = anonimus.Select(s => s.UgovorFileName).SingleOrDefault();
+            string type = anonimus.Select(s => s.UgovorFileType).SingleOrDefault();
+            return File(file, type, name);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

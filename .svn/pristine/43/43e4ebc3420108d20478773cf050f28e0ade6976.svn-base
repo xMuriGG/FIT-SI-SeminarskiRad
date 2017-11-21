@@ -1,0 +1,53 @@
+﻿@model CZE.Web.Areas.Osoba.Models.OsobaDetailsVM
+@{
+    ViewBag.Title = "KandidatCreate";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+<h2>Zaposlenik create</h2>
+
+<div class=" panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Osoba</h3>
+    </div>
+    <div class="panel-body" style="background-color:#636363; color:white">
+        @{Html.RenderPartial("~/Areas/Osoba/Views/Osoba/_OsobaDetails.cshtml", Model);}
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Zaposlenik</h3>
+    </div>
+    <div class="panel-body">
+        @using (@Html.BeginForm())
+        {
+            <div class="form-horizontal">
+                @Html.HiddenFor(model => model.OsobaID)
+                @Html.HiddenFor(model => model.Ime)
+                @Html.HiddenFor(model => model.Prezime)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Zaposlenik.StepenObrazovanja, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-4">
+                        @Html.EnumDropDownListFor(model => model.Zaposlenik.StepenObrazovanja, new { @class = "form-control" } )
+                        @Html.ValidationMessageFor(model => model.Zaposlenik.StepenObrazovanja, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Zaposlenik.BrojRadneKnjizice, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.Zaposlenik.BrojRadneKnjizice, new { htmlAttributes = new { @class = "form-control", rows = "5" } })
+                        @Html.ValidationMessageFor(model => model.Zaposlenik.BrojRadneKnjizice, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <input type="submit" value="Snimi" class="btn btn-default" />
+            </div>
+        }
+    </div>
+</div>
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

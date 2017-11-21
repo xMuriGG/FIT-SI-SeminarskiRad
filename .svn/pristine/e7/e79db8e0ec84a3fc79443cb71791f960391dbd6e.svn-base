@@ -1,0 +1,11 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursVM
+
+@{
+    ViewBag.Title = "Create";
+    Layout = null;
+}
+
+<h2>Kurs create</h2>
+<hr />
+@{Html.RenderPartial("_KursEdit", Model);}
+

@@ -1,0 +1,29 @@
+﻿@model CZE.Web.Models.UplateKandidataChartVM
+
+@*<div class="row">*@
+    <div class="panel panel-green  col-lg-6">
+        <div class="panel-heading text-center">Uplate kandidata po mjesecima</div>
+        <br />
+        <div class="col-sm-3">
+            @Html.Hidden("charData2", Html.Raw(System.Web.Helpers.Json.Encode(Model.Data)))
+            @using (Ajax.BeginForm("UplateKandidataChart",
+                null,
+                ajaxOptions: new AjaxOptions
+                {
+                    UpdateTargetId = "uplKandidataChart",
+                    HttpMethod = "GET",
+                    OnSuccess = "SetChartUplateKandidata"
+                }, 
+                htmlAttributes: new { id = "uplKandidataForm" }))
+            {
+                @Html.DropDownList("godinaDDL_upl", Model.GodineDDL, new { @class = "form-control" })
+            }
+        </div>
+        <br />
+        <div class="panel-body graph-container">
+            <div id="uplateKandidataChart" style="height: 250px;"></div>
+        </div>
+    </div>
+@*</div>*@
+
+

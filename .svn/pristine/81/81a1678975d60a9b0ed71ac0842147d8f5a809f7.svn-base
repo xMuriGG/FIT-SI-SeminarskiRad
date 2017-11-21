@@ -1,0 +1,180 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using CZE.Web.Areas.AdministrativniRadnik.Models;
+using CZE.Web.Helper;
+using System;
+using System.Data.Entity;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Web.Areas.Osoba.Models;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    public class IzradaCertifikataController : Controller
+    {
+        CZEContext db = new CZEContext();
+        // GET: AdministrativniRadnik/IzradaCertifikata
+        public ActionResult Create()
+        {
+            CertifikatEditVM cVM = new CertifikatEditVM();
+            cVM.GrupaKandidatiDDL = CertifikatEditVM.GrupaKandidatiDDLSet(db);
+            cVM.DatumOdobrenja = DateTime.Now;
+            return View(cVM);
+        }
+        [HttpPost]
+        public ActionResult Create(CertifikatEditVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.GrupaKandidatiDDL = CertifikatEditVM.GrupaKandidatiDDLSet(db, model.GrupaKandidatiID);
+                return View(model);
+            }
+            model.ZaposlenikID = Autentifikacija.GetLogiraniKorisnikId(HttpContext);
+            db.Certifikati.Add(model.ToCertifikat());
+
+            try
+            {
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Certifikat uspješno odobren.", InfoMessageType.success);
+
+            }
+            catch (Exception)
+            {
+                TempData["InfoMessage"] = new InfoMessage("Certifikat nije odobren.", InfoMessageType.danger);
+            }
+
+            return RedirectToAction("Prikaz");
+        }
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            CertifikatEditVM c = new CertifikatEditVM(db.Certifikati.FirstOrDefault(x => x.CertifikatID == id));
+            if (c == null)
+            {
+                return HttpNotFound();
+            }
+            c.GrupaKandidatiDDL = CertifikatEditVM.GrupaKandidatiDDLSet(db, c.GrupaKandidatiID);
+
+            return View("Create", c);
+        }
+        [HttpPost]
+        public ActionResult Edit(CertifikatEditVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.GrupaKandidatiDDL = CertifikatEditVM.GrupaKandidatiDDLSet(db, model.GrupaKandidatiID);
+                return View("Create", model);
+            }
+            try
+            {
+                model.ZaposlenikID = Autentifikacija.GetLogiraniKorisnikId(HttpContext);
+                db.Entry(model.ToCertifikat()).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Certifikat uspješno editovan.", InfoMessageType.success);
+            }
+            catch (Exception)
+            {
+                TempData["InfoMessage"] = new InfoMessage("Certifikat nije editovan.", InfoMessageType.danger);
+            }
+
+            return RedirectToAction("Prikaz");
+        }
+        public ActionResult Prikaz(bool partial = false)
+        {
+            if (TempData["InfoMessage"] != null)
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+
+            List<CertifikatTableVM> list = db.Certifikati
+                .AsNoTracking()
+                .Select(s => new CertifikatTableVM
+                {
+                    CertifikatId = s.CertifikatID,
+                    ImePrezime = s.GrupaKandidati.Kandidat.Osoba.Ime + " " + s.GrupaKandidati.Kandidat.Osoba.Prezime,
+                    DatumRodjenja = s.GrupaKandidati.Kandidat.Osoba.DatumRodjenja,
+                    DatumOdobrenja = s.DatumOdobrenja,
+                    Uruceno = s.Uruceno,               
+                    KursNaziv = s.GrupaKandidati.Grupa.Kurs.Naziv,
+                    TipNaziv = s.GrupaKandidati.Grupa.Kurs.KursTip.Naziv,
+                })
+                .ToList();
+            if (partial)
+            {
+                return PartialView("_CertifikatiTable", list);
+            }
+            return View(list);
+        }
+        public ActionResult Uruci(int id)
+        {
+            try
+            {
+                var certifikat = db.Certifikati.AsNoTracking().First(x => x.CertifikatID == id);
+                certifikat.Uruceno = certifikat.Uruceno ? false : true;
+                db.Certifikati.Attach(certifikat);
+                db.Entry(certifikat).Property(x => x.Uruceno).IsModified = true;
+                db.SaveChanges();
+            }
+            catch (Exception){}
+
+            return RedirectToAction("Prikaz", new { partial = true });
+        }
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            CertifikatDetailsVM details;
+                      
+            details = db.Certifikati
+                .AsNoTracking()
+                .Where(x => x.CertifikatID == id)
+                .Select(s => new CertifikatDetailsVM {                  
+                    //Grupa/Kurs/Tip
+                    GrupaKursTipDetails = new GrupaDetailsVM
+                    {
+                        Kurs = s.GrupaKandidati.Grupa.Kurs,
+                        KursTip = s.GrupaKandidati.Grupa.Kurs.KursTip,
+                        GrupaID = s.GrupaKandidati.Grupa.GrupaID,
+                        Naziv = s.GrupaKandidati.Grupa.Naziv,
+                        Pocetak = s.GrupaKandidati.Grupa.Pocetak,
+                        Kraj = s.GrupaKandidati.Grupa.Kraj,
+                        Aktivna = s.GrupaKandidati.Grupa.Aktivna,
+                        KursID = s.GrupaKandidati.Grupa.KursID,
+                        ImePrezimeZaposlenika = s.GrupaKandidati.Grupa.Zaposlenik.Osoba.Ime + " " + s.Zaposlenik.Osoba.Prezime,
+                        KandidatID=s.GrupaKandidati.KandidatID
+                    },
+                    //Certifikat
+                    CertifikatId = s.CertifikatID,
+                    DatumOdobrenja = s.DatumOdobrenja,
+                    Uruceno = s.Uruceno,
+                    Biljeske = s.Biljeske,
+                    ZaposlenikOdobrio=s.Zaposlenik.Osoba.Ime+" "+s.Zaposlenik.Osoba.Prezime
+                })
+                .FirstOrDefault();
+
+
+            //Optimizovati dobavljanje osobe iz baze .AsNoTracking(), ukloniti virtualce iz osoba details
+            OsobaDetailsVM osobaDetails =new OsobaDetailsVM( db.Osobe
+                .AsNoTracking()
+                       .Include(i => i.Kandidat)                      
+                       .Where(o => o.OsobaID == details.GrupaKursTipDetails.KandidatID)
+                       .FirstOrDefault());
+            details.OsobaDetails = osobaDetails;
+            return View(details);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<CZE.Web.Areas.Direktor.Models.UgovorZaposlenjaDetailsVM>
+@{
+    ViewBag.Title = "Prikaz";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+@section HeadLinks
+{
+    <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+}
+<h2>Prikaz</h2>
+<hr />
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div id="UgovoriTable">
+            @{Html.RenderPartial("_UgoviriPrikazTable", Model);}
+        </div>    
+    </div>
+</div>
+@section JavaScriptFiles{
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        function SetTable() {
+            $('#prikaz').DataTable({
+                responsive: true
+            });
+        };
+        $(document).ready(function () {
+            SetTable();
+        });
+        
+
+    </script>
+}

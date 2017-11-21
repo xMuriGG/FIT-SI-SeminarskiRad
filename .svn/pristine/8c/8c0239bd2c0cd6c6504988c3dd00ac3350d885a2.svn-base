@@ -1,0 +1,67 @@
+﻿@model IEnumerable<CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM>
+@{
+    ViewBag.Title = "PrikazOsoba";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+
+<h2>Lista osoba</h2>
+<hr />
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+    <br />
+    </div>
+}
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Ime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Prezime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Spol)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Adresa)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prezime)
+            </td>      
+            <td>
+                @Html.DisplayFor(modelItem => item.Spol)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adresa)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.OsobaID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.OsobaID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.OsobaID })
+            </td>
+        </tr>
+    }
+
+</table>

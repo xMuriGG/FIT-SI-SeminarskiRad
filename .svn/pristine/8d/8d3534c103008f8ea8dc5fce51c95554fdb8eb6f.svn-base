@@ -1,0 +1,61 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using CZE.Data.Models;
+
+namespace CZE.Data
+{
+    public class CZEContext:DbContext
+    {
+        public DbSet<Osoba> Osobe { get; set; }
+        public DbSet<Zaposlenik> Zaposlenici { get; set; }
+        public DbSet<UgovorZaposlenja> Ugovori { get; set; }
+        public DbSet<PlatnaLista> PlatneListe { get; set; }
+        public DbSet<ObracunskiPeriod> ObracunskiPeriodi { get; set; }
+        //public DbSet<Adresa> Adrese { get; set; }
+        public DbSet<Grad> Gradovi { get; set; }
+        public DbSet<BrojTelefona> BrojeviTelefona { get; set; }
+        public DbSet<PozicijaKompanije> PozicijeKompanije { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Prisustvo>().HasKey(d => new { d.KandidatID, d.TerminID });
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+          
+            //Osoba
+            modelBuilder.Entity<Osoba>().Property(t => t.Ime).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<Osoba>().Property(t => t.Prezime).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<Osoba>().Property(t => t.Spol).IsRequired();
+            modelBuilder.Entity<Osoba>().Property(t => t.Email).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Osoba>().Property(t => t.Adresa).IsRequired().HasMaxLength(100);
+            //BrojTelefona
+            modelBuilder.Entity<BrojTelefona>().Property(t => t.Broj).IsRequired().HasMaxLength(15);
+            //Grad
+            modelBuilder.Entity<Grad>().Property(t => t.Naziv).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<Grad>().Property(t => t.PTT).IsRequired().HasMaxLength(10);
+            //KoricnickiNalog
+            modelBuilder.Entity<KorisnickiNalog>().Property(t => t.KorisnickoIme).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<KorisnickiNalog>().Property(t => t.Lozinka).IsRequired().HasMaxLength(50);         
+            //Zaposlenik
+            modelBuilder.Entity<Zaposlenik>().Property(t => t.StepenObrazovanja).IsRequired();
+            modelBuilder.Entity<Zaposlenik>().Property(t => t.BrojRadneKnjizice).IsRequired().HasMaxLength(50);
+            //PlatnaLista
+            modelBuilder.Entity<PlatnaLista>().Property(t => t.Svrha).IsRequired().HasMaxLength(100);
+           //PozicijeKompanije
+            modelBuilder.Entity<PozicijaKompanije>().Property(t => t.Naziv).IsRequired().HasMaxLength(50);
+            //Grupa
+            modelBuilder.Entity<Grupa>().Property(t => t.Naziv).IsRequired().HasMaxLength(100);
+            //Kurs
+            modelBuilder.Entity<Kurs>().Property(t => t.Naziv).IsRequired().HasMaxLength(100);
+            //KursTip
+            modelBuilder.Entity<KursTip>().Property(t => t.Naziv).IsRequired().HasMaxLength(100);
+
+        }
+
+        public System.Data.Entity.DbSet<CZE.Data.Models.Kandidat> Kandidats { get; set; }
+    }
+ 
+}

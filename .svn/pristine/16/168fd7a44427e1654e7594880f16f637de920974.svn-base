@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Data.Models;
+using CZE.Data;
+using CZE.Web.Models;
+using System.Web.Script.Serialization;
+namespace CZE.Web.Controllers
+{
+    public class HomeController : Controller
+    {
+        CZEContext ctx = new CZEContext();
+        DashboardDataVM dashData = new DashboardDataVM();
+        // GET: Home
+        public ActionResult DashBoard()
+        {
+            if (TempData["InfoMessage"] != null)
+            {
+                ViewBag.InfoMessage = (Helper.InfoMessage)TempData["InfoMessage"];
+            }
+            dashData.BrojOsoba = ctx.Osobe.Count();
+            dashData.BrojKandidata = ctx.Kandidats.Count();
+            dashData.BrojZaposlenika = ctx.Zaposlenici.Count();
+
+            dashData.BrojKandidataChart = new BrojKandidataChartVM();
+            dashData.BrojKandidataChart.GodineDDL = BrojKandidataChartGodineDDL(0);
+            int godinaDDL = Convert.ToInt32(dashData.BrojKandidataChart.GodineDDL.FirstOrDefault().Value);
+            dashData.BrojKandidataChart.Data = ctx.Kandidats.Where(x => x.DatumUpisa.Year == godinaDDL)
+                    .GroupBy(x => x.DatumUpisa.Month)
+                    .Select(g => new BrojKandidataChartData() { xDatum = godinaDDL + "-" + g.Key, yCount = g.Count() })
+                    .ToList();    
+            
+            return View(dashData);
+        }
+        public PartialViewResult BrojKandidataChart(int godinaDDL = 0)
+        {
+            dashData.BrojKandidataChart = new BrojKandidataChartVM();
+
+            dashData.BrojKandidataChart.GodineDDL = BrojKandidataChartGodineDDL(godinaDDL);
+
+            if (dashData.BrojKandidataChart.GodineDDL.Count > 0)
+            {
+                if (godinaDDL == 0)
+                {
+                    godinaDDL = Convert.ToInt32(dashData.BrojKandidataChart.GodineDDL.FirstOrDefault().Value);
+                }
+                dashData.BrojKandidataChart.Data = ctx.Kandidats.Where(x => x.DatumUpisa.Year == godinaDDL)
+                    .GroupBy(x => x.DatumUpisa.Month)
+                    .Select(g => new BrojKandidataChartData() { xDatum = godinaDDL + "-" + g.Key, yCount = g.Count() })
+                    .ToList();                
+            }
+
+            return PartialView("_BrojKandidataChart", dashData.BrojKandidataChart);
+            //return PartialView("test");
+        }
+        private List<SelectListItem> BrojKandidataChartGodineDDL(int selected = 0)
+        {
+            return ctx.Kandidats
+                .AsNoTracking()
+                .Select(s => new SelectListItem
+                {
+                    Value = s.DatumUpisa.Year.ToString(),
+                    Text = s.DatumUpisa.Year.ToString(),
+                    Selected = s.DatumUpisa.Year == selected
+                })
+                .Distinct()
+                .OrderByDescending(x => x)
+                .ToList();
+        }
+
+    }
+}

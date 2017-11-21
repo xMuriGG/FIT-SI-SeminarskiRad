@@ -1,0 +1,32 @@
+﻿@model CZE.Data.Models.KursTip
+
+@{
+    ViewBag.Title = "KursTipDetails";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Kurs tip details</h2>
+<hr />
+<div>
+    <dl class="dl-horizontal">
+        <dt>Kategorija</dt>
+        <dd>@Html.DisplayFor(model => model.KursKategorija.Naziv)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Naziv)</dt>
+        <dd>@Html.DisplayFor(model => model.Naziv)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Trajanje)</dt>
+        <dd>@Html.DisplayFor(model => model.Trajanje) Časova</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Cijena)</dt>
+        <dd>@Html.DisplayFor(model => model.Cijena) KM</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Opis)</dt>
+        <dd>@Html.DisplayFor(model => model.Opis)</dd>
+     
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "KursTipEdit", new { id = Model.KursTipID }) |
+    @Html.ActionLink("Back to List", "KursTipPrikaz")
+</p>

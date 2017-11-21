@@ -1,0 +1,14 @@
+﻿
+<li>
+    <a href="#"><i class="fa fa-wrench fa-fw"></i> Administrator sistema<span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="#">Korisnicki nalozi <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <li>
+                    <a href="~/AdministratorSistema/KorisnickiNalog/Prikazi">Prikazi</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>

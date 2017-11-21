@@ -1,0 +1,121 @@
+﻿using CZE.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Web.Areas.Osoba.Models;
+using CZE.Web.Helper;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    public class AdministrativniRadnikController : Controller
+    {
+        CZEContext db = new CZEContext();
+        #region PromoteList
+        public ActionResult PromoteOsobeMain()
+        {
+            if (TempData["InfoMessage"] != null)
+            {
+                ViewBag.InfoMessage = (Helper.InfoMessage)TempData["InfoMessage"];
+            }
+            List<Data.Models.Osoba> osobe = PromoteOsobeAllFromDb();
+
+            return View(osobe.Select(s=>new OsobaLessDetailsVM(s)).ToList());
+        }
+
+        public ActionResult PromoteOsobeAllList()
+        {
+            List<Data.Models.Osoba> osobe = PromoteOsobeAllFromDb();
+
+            return PartialView("_PromoteOsobeTable", osobe.Select(s => new OsobaLessDetailsVM(s)).ToList());
+        }
+        private List<Data.Models.Osoba> PromoteOsobeAllFromDb()
+        {
+            List<Data.Models.Osoba> osobe = db.Osobe
+               .Where(x => x.Kandidat.KandidatID != x.OsobaID || x.Zaposlenik.ZaposlenikID != x.OsobaID)
+               .OrderByDescending(o => o.OsobaID)
+               .ToList();
+            return osobe;
+        }
+        public PartialViewResult PromoteOsobeToKandidatList()
+        {
+            List<Data.Models.Osoba> osobe = db.Osobe
+                .Where(x => x.Kandidat.KandidatID != x.OsobaID)
+                .OrderByDescending(o => o.OsobaID)
+                .ToList();
+
+            return PartialView("_PromoteOsobeTable", osobe.Select(s=>new OsobaLessDetailsVM(s)).ToList());
+        }
+        public PartialViewResult PromoteOsobeToZaposlenikList()
+        {
+            List<Data.Models.Osoba> osobe = db.Osobe
+                .Where(x => x.Zaposlenik.ZaposlenikID != x.OsobaID)
+                .OrderByDescending(o => o.OsobaID)
+                .ToList();
+
+            return PartialView("_PromoteOsobeTable", osobe.Select(s => new OsobaLessDetailsVM(s)).ToList());
+        }
+        #endregion
+
+        public ActionResult KandidatCreate(int id)
+        {
+            return View(new OsobaDetailsVM(db.Osobe.Find(id)));
+        }
+        [HttpPost]
+        public ActionResult KandidatCreate(OsobaDetailsVM model)
+        {
+            if(ModelState.IsValid)
+            {
+                var kandidat = new Data.Models.Kandidat() { 
+                    KandidatID=model.OsobaID,
+                    DatumUpisa=model.Kandidat.DatumUpisa,
+                    Biljeske=model.Kandidat.Biljeske
+                };
+                db.Kandidats.Add(kandidat);
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Osoba '" + model.Ime + " " + model.Prezime + "' promovisana u kandidata.",
+                  InfoMessageType.success);
+            }
+            else
+            {
+                return View(model);
+            }
+                return RedirectToAction("PromoteOsobeMain");
+        }
+        public ActionResult ZaposlenikCreate(int id)
+        {      
+            return View(new OsobaDetailsVM(db.Osobe.Find(id)));
+        }
+        [HttpPost]
+        public ActionResult ZaposlenikCreate(OsobaDetailsVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                Data.Models.Zaposlenik z = new Data.Models.Zaposlenik {
+                ZaposlenikID=model.OsobaID,
+                StepenObrazovanja=model.Zaposlenik.StepenObrazovanja,
+                BrojRadneKnjizice=model.Zaposlenik.BrojRadneKnjizice              
+                };
+                db.Zaposlenici.Add(z);
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Osoba '"+model.Ime+" "+model.Prezime+"' promovisana u zaposlenika.",
+                    InfoMessageType.success);
+            }
+            else
+            {
+                return View(model);
+            }
+            return RedirectToAction("PromoteOsobeMain");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

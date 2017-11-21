@@ -1,0 +1,29 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.GrupaEditVM
+@{
+    ViewBag.Title = "Create";
+    Layout = null;
+}
+
+<div class="panel panel-green">
+    <div class="panel-heading">
+        Grupa create
+    </div>
+    <div class="panel-body">
+        @using (Ajax.BeginForm("Create", null,
+    ajaxOptions: new AjaxOptions { UpdateTargetId = "grupaPrikaz", OnSuccess = "SetTableGrupa" },
+    htmlAttributes: new { id = "grupaForm" }))
+        {
+            { Html.RenderPartial("_Create", Model); }
+        }
+        @Ajax.ActionLink(" ", "Prikaz", "Grupa",
+                   routeValues: new { kursId = Model.KursID },
+                   ajaxOptions: new AjaxOptions { UpdateTargetId = "grupaPrikaz", OnSuccess = "SetTableGrupa" },
+                   htmlAttributes: new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $.validator.unobtrusive.parse("#grupaForm");
+    });
+</script>
+

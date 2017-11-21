@@ -1,0 +1,49 @@
+﻿@model IEnumerable<CZE.Web.Areas.Direktor.Models.UgovorZaposlenjaDetailsVM>
+@{
+    ViewBag.Title = "Prikaz";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+@section HeadLinks
+{
+    <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+}
+
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2>
+            @Html.ActionLink(" ", "Create", null, new { @class = "btn btn-default glyphicon glyphicon-plus",title="Novi ugovor zaposlenja" })
+            Ugovori zaposlenja
+        </h2>
+    </div>
+    <div class="panel-body">
+        <div id="UgovoriTable">
+            @{Html.RenderPartial("_UgoviriPrikazTable", Model);}
+        </div>
+    </div>
+</div>
+@section JavaScriptFiles{
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        function SetTable() {
+            $('#prikaz').DataTable({
+                responsive: true
+            });
+        };
+        $(document).ready(function () {
+            SetTable();
+        });
+
+
+    </script>
+}

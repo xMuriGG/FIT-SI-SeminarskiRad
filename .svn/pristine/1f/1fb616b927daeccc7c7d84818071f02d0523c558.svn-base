@@ -1,0 +1,134 @@
+﻿using CZE.Data;
+using CZE.Web.Areas.AdministrativniRadnik.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Data.Entity;
+using CZE.Data.Models;
+using CZE.Web.Helper;
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    [Autorizacija(UlogeKorisnika.Administrativni_Radnik, UlogeKorisnika.Direktor, UlogeKorisnika.Administrator)]
+    public class UplataKandidataController : Controller
+    {
+        CZEContext db = new CZEContext();
+        public ActionResult Initial()
+        {
+            List<Data.Models.Kandidat> kandidati = db.Kandidats.AsNoTracking().Include(x => x.Osoba).ToList();
+            List<UplataKandidataTableVM> kandidatiTable = new List<UplataKandidataTableVM>();
+            foreach (var item in kandidati)
+            {
+                kandidatiTable.Add(new UplataKandidataTableVM(item));
+            }
+            return View(kandidatiTable);
+        }
+        public PartialViewResult GrupeKandidata(int kandidatId)
+        {
+            List<GrupeKandidatiTableVM> grupe = db.GrupeKandidati
+                .AsNoTracking()
+                .Where(x => x.KandidatID == kandidatId)
+                .Select(s => new GrupeKandidatiTableVM
+                {
+                    GrupaKandidatiID = s.GrupaKandidatiID,
+                    GrupaNaziv = s.Grupa.Naziv,
+                    KursNaziv = s.Grupa.Kurs.Naziv,
+                    TipNaziv = s.Grupa.Kurs.KursTip.Naziv,
+                    Predavac = s.Grupa.Zaposlenik.Osoba.Ime + " " + s.Grupa.Zaposlenik.Osoba.Prezime,
+                    Uplaceno = (!s.UplateKandidata.Any() ? 0m : s.UplateKandidata.Sum(x => x.Kolicina)) + "\\" + s.Grupa.Kurs.KursTip.Cijena + " KM",
+                    StatusUplate = s.UplateKandidata.Any(x => x.StatusUplate == true)
+                }).ToList();
+
+            if (TempData["InfoMessage"] != null)
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+            return PartialView("_GrupaKandidatiTable", grupe);
+        }
+        public ActionResult Create(int grupaKandidatiId = 0)
+        {
+            UplataKandidataEditVM model = new UplataKandidataEditVM();
+            model.NavGrupaKandidatiID = grupaKandidatiId;
+            model.DatumUplate = DateTime.Now;
+            model.GrupaKandidatiDDL = UplataKandidataEditVM.GrupaKandidatiDDLSet(db, grupaKandidatiId);
+
+            return View("_Create", model);
+        }
+        [HttpPost]
+        public ActionResult Create(UplataKandidataEditVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.GrupaKandidatiDDL = UplataKandidataEditVM.GrupaKandidatiDDLSet(db, model.GrupaKandidatiID);
+                return View("_Create", model);
+            }
+            int logiraniKorisnikId = Autentifikacija.GetLogiraniKorisnik(HttpContext).KorisnickiNalogID;
+
+            if (db.Zaposlenici.Any(x => x.ZaposlenikID == logiraniKorisnikId))
+            {
+                try
+                {
+                    UplataKandidata uplata = model.ToUplataKandidata();
+                    uplata.ZaposlenikID = logiraniKorisnikId;
+                    db.UplateKandidata.Add(uplata);
+                    db.SaveChanges();
+                    TempData["InfoMessage"] = new InfoMessage("Uplata uspješno pohranjena u bazu.", InfoMessageType.success);
+                }
+                catch (Exception)
+                {
+                    TempData["InfoMessage"] = new InfoMessage("Uplata nije pohranjena u bazu.", InfoMessageType.danger);
+                }
+            }
+            else
+            {
+                TempData["InfoMessage"] = new InfoMessage("Logirani korisnik mora biti zaposlenik da bih dodao uplatu.", InfoMessageType.warning);
+            }
+
+            int kandidatID = GetKandidatIdByGrupaKandidatiId(model.GrupaKandidatiID);
+            return RedirectToAction("UplateGrupaKandidat", new { grupaKandidatiId = model.GrupaKandidatiID });
+        }
+        public int GetKandidatIdByGrupaKandidatiId(int grupaKandidatiID)
+        {
+            return db.GrupeKandidati.AsNoTracking()
+                .Where(x => x.GrupaKandidatiID == grupaKandidatiID)
+                .FirstOrDefault()
+                .KandidatID;
+        }
+        public ActionResult UplateGrupaKandidat(int grupaKandidatiId = 0)
+        {
+            UplateGrupaKandidatiVM uplateVM = new UplateGrupaKandidatiVM();
+            uplateVM.GrupaKandidatiID = grupaKandidatiId;
+            uplateVM.KandidatID = GetKandidatIdByGrupaKandidatiId(grupaKandidatiId);
+
+            var customSelect = db.GrupeKandidati
+                 .AsNoTracking()
+                 .Where(x => x.GrupaKandidatiID == grupaKandidatiId)
+                 .Select(s => new
+                 {
+                     grupaDetails = s.Grupa.Naziv + "|" + s.Grupa.Kurs.Naziv + "|" + s.Grupa.Kurs.KursTip.Naziv,
+                     kandidatDetails = s.Kandidat.Osoba.Ime + " " + s.Kandidat.Osoba.Prezime,
+                     uplataDetails = (!s.UplateKandidata.Any() ? 0m : s.UplateKandidata.Sum(x => x.Kolicina)) + "\\" + s.Grupa.Kurs.KursTip.Cijena + " KM"
+                 }).FirstOrDefault();
+
+            uplateVM.GrupaDetails = customSelect.grupaDetails;
+            uplateVM.KandidatDetails = customSelect.kandidatDetails;
+            uplateVM.UplataDetails = customSelect.uplataDetails;
+
+            uplateVM.UplateKandidataTable = db.UplateKandidata
+                .AsNoTracking()
+                .Where(x => x.GrupaKandidatiID == grupaKandidatiId)
+                .OrderByDescending(x => x.DatumUplate)
+                .ToList();
+            if (TempData["InfoMessage"] != null)
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+            return PartialView("_UplateGrupaKandidat", uplateVM);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

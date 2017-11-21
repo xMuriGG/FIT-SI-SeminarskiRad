@@ -1,0 +1,9 @@
+﻿<li>
+    <a href="#"><i class="fa fa-book"></i> Predavač<span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="...">..</a>
+        </li>
+    </ul>
+</li>
+

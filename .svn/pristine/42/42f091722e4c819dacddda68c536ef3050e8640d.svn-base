@@ -1,0 +1,18 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursTipVM
+@{
+    ViewBag.Title = "KursTipEdit";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+<h2>Kurs tip edit</h2>
+<hr />
+
+@{Html.RenderPartial("_TipKursaEdit", Model);}
+
+<div>
+    @Html.ActionLink(" ", "KursTipPrikaz",null, htmlAttributes: new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+</div>
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

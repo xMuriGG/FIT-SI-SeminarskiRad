@@ -1,0 +1,10 @@
+﻿1. koristiti jquerx-1.12.4
+2. prilikom izbacivanja greske na konzoli web pretrazivaca kako ne moze loadati fontawesome-webfont.woff2, u Web.config dodati kako bi prepoznao .woff exstenziju
+				<system.webServer>
+					<staticContent>
+						<remove fileExtension=".woff" />
+						<mimeMap fileExtension=".woff" mimeType="application/font-woff" />
+						<remove fileExtension=".woff2" />
+						<mimeMap fileExtension=".woff2" mimeType="font/x-woff" />
+					</staticContent>
+				</system.webServer>

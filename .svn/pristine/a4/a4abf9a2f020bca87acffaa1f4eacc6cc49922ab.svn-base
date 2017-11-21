@@ -1,0 +1,35 @@
+﻿using CZE.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    public class UplataKandidataController : Controller
+    {
+        CZEContext db = new CZEContext();
+        public ActionResult Initial()
+        {
+            return View();
+        }
+        public ActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Create()
+        {
+            return View();
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

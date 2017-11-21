@@ -1,0 +1,37 @@
+﻿@model IEnumerable<CZE.Web.Areas.AdministrativniRadnik.Models.CertifikatTableVM>
+<table id="prikaz" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.ImePrezime)</th>
+            <th>@Html.DisplayNameFor(model => model.DatumRodjenja)</th>
+            <th>@Html.DisplayNameFor(model => model.DatumOdobrenja)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Uruceno)</th>
+            <th>@Html.DisplayNameFor(model => model.GrupaNaziv)</th>
+            <th>@Html.DisplayNameFor(model => model.KursNaziv)</th>
+            <th>@Html.DisplayNameFor(model => model.TipNaziv)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ImePrezime)</td>
+                <td>@Html.DisplayFor(modelItem => item.DatumRodjenja)</td>
+                <td>@Html.DisplayFor(modelItem => item.DatumOdobrenja)</td>
+                <td class="text-center">
+                    @Ajax.ActionLink(item.Uruceno ? "DA" : "NE", "Uruci",
+            routeValues: new { id = item.CertifikatId },
+            ajaxOptions: new AjaxOptions { UpdateTargetId = "certifikatiTable" },
+            htmlAttributes: new { @class = item.Uruceno ? "btn btn-success btn-xs" : "btn btn-danger btn-xs" }
+            )
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.GrupaNaziv)</td>
+                <td>@Html.DisplayFor(modelItem => item.KursNaziv)</td>
+                <td>@Html.DisplayFor(modelItem => item.TipNaziv)</td>
+                <td><a href="~/Areas/AdministrativniRadnik/Reports/IzradaCertifikata/IzradaCertifikataWF.aspx?Id=@item.CertifikatId">Print</a></td>
+            </tr>
+        }
+    </tbody>
+
+</table>

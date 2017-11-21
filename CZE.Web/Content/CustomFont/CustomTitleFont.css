@@ -1,0 +1,14 @@
+﻿@font-face {
+    font-family: "Tele-Marines";
+    src: url('TELE2.TTF') format('truetype');
+}
+#CZETitle{
+    font-family: "Tele-Marines";
+    color:#83BA14;
+
+    letter-spacing: .3em;
+    text-shadow: 2px 3px 0px rgba(0, 0, 0, 0.1);
+}
+/*.nav--buttomBorder{
+    border-bottom:solid 2px #83BA14;
+}*/

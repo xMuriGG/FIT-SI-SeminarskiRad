@@ -1,0 +1,26 @@
+﻿@model CZE.Web.Models.BrojKandidataChartVM
+
+    <div class="panel panel-primary  col-lg-6">
+        <div class="panel-heading text-center">Broj novih kandidata po mjesecima</div>
+        <br />
+        <div class="col-sm-3">
+            @Html.Hidden("charData1",Html.Raw(System.Web.Helpers.Json.Encode(Model.Data)))
+            @using (Ajax.BeginForm("BrojKandidataChart",
+                null,
+                ajaxOptions: new AjaxOptions
+                {
+                    UpdateTargetId = "brKandidataChart",
+                    HttpMethod = "GET",
+                    OnSuccess = "SetChartBrojKandidata"
+                }, 
+                htmlAttributes: new { id="brKandidataForm"}))
+            {                
+                @Html.DropDownList("godinaDDL_br", Model.GodineDDL, new { @class = "form-control" })
+            }
+        </div>
+        <br />
+        <div class="panel-body graph-container">
+            <div id="brojKandidataChart" style="height: 250px;"></div>
+        </div>
+    </div>
+

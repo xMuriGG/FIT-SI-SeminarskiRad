@@ -1,0 +1,81 @@
+﻿using CZE.Data;
+using CZE.Web.Areas.AdministrativniRadnik.Models;
+using CZE.Web.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    public class GrupaController : Controller
+    {
+        CZEContext db = new CZEContext();
+        public PartialViewResult Create(int kursId)
+        {
+            GrupaEditVM grupaVM = new GrupaEditVM();
+            grupaVM.KursDDL = GrupaEditVM.KursDDLSet(db, kursId);
+            grupaVM.Pocetak = DateTime.Now;
+            return PartialView("_Create", grupaVM);
+        }
+        [HttpPost]
+        public ActionResult Create(GrupaEditVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.KursDDL = GrupaEditVM.KursDDLSet(db, model.KursID);
+                return PartialView("_Create", model);
+            }
+            model.ZaposlenikID = Autentifikacija.GetLogiraniKorisnikId(HttpContext);
+            try
+            {
+                db.Grupe.Add(model.ToGrupa());
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(String.Empty, "Došlo je do greške prilikom validacije, provjeriti unesena polja.");
+                model.KursDDL = GrupaEditVM.KursDDLSet(db, model.KursID);
+                return PartialView("_Create", model);
+            }
+            return RedirectToAction("Prikaz", new { kursId = model.KursID });
+        }
+
+        public PartialViewResult Prikaz(int kursId)
+        {
+            List<GrupaTableVM> list = db.Grupe
+                .AsNoTracking()
+                .Where(x => x.KursID == kursId)
+                .Select(s => new GrupaTableVM
+                {
+                    GrupaID = s.GrupaID,
+                    Naziv = s.Naziv,
+                    Pocetak = s.Pocetak,
+                    Kraj = s.Kraj,
+                    Aktivna = s.Aktivna,
+                    KursID = s.KursID
+                })
+                .ToList()
+                .OrderByDescending(x => x.GrupaID)
+                .ToList();
+
+            ViewBag.kursId = kursId;
+            var i = db.Kursevi
+                .AsNoTracking()
+                .Where(x => x.KursID == kursId)
+                .Select(s => new { info = s.Naziv + "-" + s.KursTip.Naziv })
+                .FirstOrDefault();
+            ViewBag.kursInfo = i.info.ToString();
+            return PartialView("_Prikaz", list);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

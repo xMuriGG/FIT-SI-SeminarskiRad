@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CZE.Web.Areas.AdministrativniRadnik.Models.GrupaTableVM>
+
+<div class="panel panel-green">
+    <div class="panel-heading">
+        @Ajax.ActionLink(" ", "Create", "Grupa",
+                 routeValues: new { kursId = Convert.ToInt32(ViewBag.kursId) },
+                                   ajaxOptions: new AjaxOptions { UpdateTargetId = "grupaPrikazInner", OnSuccess = "ScrollToTableGrupa" },
+                 htmlAttributes: new { @class = "btn btn-warning glyphicon glyphicon-plus", title = "Grupa create" })
+        Grupe za kurs:<strong>@ViewBag.kursInfo</strong>
+    </div>
+    <div id="grupaPrikazInner" class="panel-body">
+        @if (Model.Count() > 0)
+        {
+            <table id="grupeTable" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Naziv)</th>
+                        <th>@Html.DisplayNameFor(model => model.Pocetak)</th>
+                        <th>@Html.DisplayNameFor(model => model.Kraj)</th>
+                        <th>@Html.DisplayNameFor(model => model.Aktivna)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Naziv)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Pocetak)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Kraj)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Aktivna)</td>
+                            <td>
+                               ajax akcije
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class='alert alert-warning alert-dismissable'>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <strong>Nema grupa za odabrani kurs.</strong>
+                <br />
+            </div>
+        }
+
+        </div>
+    </div>

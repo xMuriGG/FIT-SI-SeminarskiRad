@@ -1,0 +1,20 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.CertifikatDetailsVM
+
+<div>
+    <dl class="dl-horizontal">
+      
+        <dt>@Html.DisplayNameFor(model => model.ZaposlenikOdobrio)</dt>
+        <dd>@Html.DisplayFor(model => model.ZaposlenikOdobrio)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.DatumOdobrenja)</dt>
+        <dd>@Html.DisplayFor(model => model.DatumOdobrenja)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Uruceno)</dt>
+        <dd>@Html.DisplayFor(model => model.Uruceno)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Biljeske)</dt>
+        <dd>@Html.DisplayFor(model => model.Biljeske)</dd>
+    
+    </dl>
+</div>
+

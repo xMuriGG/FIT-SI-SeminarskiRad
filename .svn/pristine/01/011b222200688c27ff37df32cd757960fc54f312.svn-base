@@ -1,0 +1,20 @@
+﻿using RestSharp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace CZE.Web.Helper
+{
+    public class Notifications
+    {
+        public static IRestResponse KandidatUspjesnaRegistracija(string imePrezime,string lozinka,string broj)
+        {
+            string poruka = "Poštovani/a " + imePrezime + ",\\n" + "Vaš zahtjev za registraciju na CZE sistem je odobren.\\n"
+                + "Password: " + lozinka;
+
+            int l = poruka.Length;
+            return InfoBipSMS.SingleTextualMessageToOneDestination(broj, poruka);
+        }
+    }
+}

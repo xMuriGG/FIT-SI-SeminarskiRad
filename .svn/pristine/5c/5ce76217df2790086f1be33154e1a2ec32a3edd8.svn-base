@@ -1,0 +1,91 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM>
+@{
+    ViewBag.Title = "PrikazOsoba";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+@section HeadLinks
+{
+<link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+}
+
+
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>
+        @Html.ActionLink(" ", "Create", null, new { @class = "btn btn-primary glyphicon glyphicon-plus", title = "Osoba create" })
+        Lista osoba
+        </h2>
+    </div>
+    <div class="panel-body">
+        <p>
+            @using (Html.BeginForm("PrikazOsoba", "Osoba", FormMethod.Get, new { id="searchForm"}))
+            {
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input id ="txtSearch" name="searchTerm" type="text" class="form-control" placeholder="Traži..." autofocus>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><span class=" glyphicon glyphicon-search" title="Pretraži"></span> </button>
+                                </span>
+</div>
+                    </div>
+                </div>
+            }
+        </p>
+
+        <table class="table">          
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.First().ImePrezime)</th>           
+                <th>@Html.DisplayNameFor(model => model.First().Spol)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Email)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Adresa)</th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ImePrezime)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Spol)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Adresa)</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.OsobaID }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.OsobaID }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.OsobaID })
+                    </td>
+                </tr>
+            }
+        </table>
+        @Html.PagedListPager(Model, page => Url.Action("PrikazOsoba", new { page, searchTerm = Request.QueryString["searchTerm"] }))
+    </div>
+</div>
+
+@section JavaScriptFiles{
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script>
+     $(document).ready(function () {
+            $("#txtSearch").autocomplete({
+                source: '@Url.Action("SearchFunctionality")',
+                delay:1000
+            });
+         $("#txtSearch").keypress(function() {
+             var code = e.keyCode ? e.keyCode : e.which;
+             if(code == 13) { 
+                 $("#searchForm").submit();
+             }
+         });
+        });
+    </script>
+}

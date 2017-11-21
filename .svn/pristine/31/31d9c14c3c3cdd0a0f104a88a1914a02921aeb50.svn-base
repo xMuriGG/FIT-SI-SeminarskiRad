@@ -1,0 +1,67 @@
+﻿@model IEnumerable<CZE.Data.Models.UgovorZaposlenja>
+@{
+    ViewBag.Title = "Prikaz";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+@section HeadLinks
+{
+    <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+}
+<h2>Prikaz</h2>
+<hr />
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <table id="prikaz" class="table">
+            <thead>
+                <tr>
+                    <th>Ime i prezime</th>
+                    <th>@Html.DisplayNameFor(model => model.DatumPocetkaUgovora)</th>
+                    <th>@Html.DisplayNameFor(model => model.Period)</th>
+                    <th class="text-center">@Html.DisplayNameFor(model => model.Status)</th>
+                    <th class="text-center">Download</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(item.Zaposlenik.Osoba.Ime + " " + item.Zaposlenik.Osoba.Prezime)</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DatumPocetkaUgovora)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Period)
+                        </td>
+                        <td class="text-center">
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td class="text-center">
+                            @Html.ActionLink(" ", "Download", new { id = item.UgovorZaposlenjaID }, new { @class = "glyphicon glyphicon-download-alt", style = "font-size:17px" })
+                        </td>
+
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.UgovorZaposlenjaID }) |
+                            @Html.ActionLink("Details", "Details", new { id = item.UgovorZaposlenjaID })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+@section JavaScriptFiles{
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#prikaz').DataTable({
+                responsive: true
+            });
+        });
+    </script>
+}

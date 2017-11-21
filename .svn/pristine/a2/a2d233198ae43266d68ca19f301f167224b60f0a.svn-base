@@ -1,0 +1,90 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using CZE.Web.Areas.Osoba.Models;
+using CZE.Web.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+
+namespace CZE.Web.Areas.Osoba.Controllers
+{
+    public class OsobaController : Controller
+    {
+        private CZEContext db = new CZEContext();
+        public ActionResult Create()
+        {
+            string s = DateTime.Now.ToShortDateString();
+            OsobaCreateVM osobaVM = new OsobaCreateVM();
+            
+            osobaVM.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View(osobaVM);
+        }
+        [HttpPost]
+        public ActionResult Create(OsobaCreateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Osobe.Add(model.ToOsoba());
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("DatumRodjenja", "Unesite validan datum ");
+                    model.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+                    return View(model);
+                }
+                TempData["InfoMessage"] = new InfoMessage("Osoba uspješno dodana", InfoMessageType.success);
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            model.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View(model);
+        }
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Data.Models.Osoba osoba = db.Osobe.Find(id);
+            if (osoba == null)
+            {
+                return HttpNotFound();
+            }
+            OsobaCreateVM osobaVM = new OsobaCreateVM(osoba);
+            osobaVM.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View("Create", osobaVM);
+        }
+        [HttpPost]
+        public ActionResult Edit(OsobaCreateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.BrojeviTelefona.RemoveRange(db.BrojeviTelefona.Where(w => w.OsobaID == model.OsobaID).ToList());
+                db.BrojeviTelefona.AddRange(model.ToOsoba().BrojeviTelefona);
+                model.BrojeviTelefona = null;
+                db.Entry(model.ToOsoba()).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Osoba uspješno editovana", InfoMessageType.success);
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            return View(model);
+        }
+        public ActionResult PrikazOsoba()
+        {
+            return View(db.Osobe.ToList());
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

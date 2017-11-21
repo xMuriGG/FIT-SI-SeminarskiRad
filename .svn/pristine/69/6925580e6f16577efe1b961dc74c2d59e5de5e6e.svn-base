@@ -1,0 +1,87 @@
+﻿@model IEnumerable<CZE.Data.Models.KursTip>
+
+@{
+    ViewBag.Title = "KursTipPrikaz";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+@section HeadLinks
+{
+    <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+}
+
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+<p>
+</p>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Tipovi kursa |
+    @Html.ActionLink(" ", "KursTipCreate", null, new { @class = "btn btn-primary glyphicon glyphicon-plus",title="Kurs tip create" })
+    </div>
+    <div class="panel-body">
+        <table id="prikaz" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Tip</th>
+                    <th>Kategorija</th>
+                    <th>Časova</th>
+                    <th>Cijena</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Naziv)</td>
+                        <td>@Html.DisplayFor(modelItem => item.KursKategorija.Naziv)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Trajanje)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Cijena) KM</td>
+                        <td class="text-center">
+                            @Ajax.ActionLink(" ", "Prikaz", "Kursevi",
+                            routeValues: new { id = item.KursTipID },
+                      ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikaz", OnSuccess = "SetTable" },
+                         htmlAttributes: new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Kursevi prikaz" })
+                            @Html.ActionLink(" ", "KursTipEdit", new { id = item.KursTipID }, new { @class = "glyphicon glyphicon-edit", style = "font-size:20px", title = "Edit" })
+                            @Html.ActionLink(" ", "KursTipDetails", new { id = item.KursTipID }, new { @class = "glyphicon glyphicon-list-alt", style = "font-size:20px", title = "Details" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="kursPrikaz">
+
+</div>
+
+@section JavaScriptFiles{
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#prikaz').DataTable({
+                responsive: true
+            });
+        });
+        function SetTable() {
+            $('#kurseviTable').DataTable({
+                responsive: true,
+                bLengthChange :false,
+                bFilter:false,
+                bInfo:false
+            });
+        };
+    </script>
+}

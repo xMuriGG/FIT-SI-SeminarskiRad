@@ -1,0 +1,104 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using CZE.Web.Areas.AdministrativniRadnik.Models;
+using CZE.Web.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    public class KurseviController : Controller
+    {
+        CZEContext db = new CZEContext();
+
+        public ActionResult Create()
+        {
+            KursVM kVM = new KursVM(db.KursTipovi.ToList());
+            return View(kVM);
+        }
+        [HttpPost]
+        public ActionResult Create(KursVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Kursevi.Add(model.ToKurs());
+                try
+                {
+                    db.SaveChanges();
+                    TempData["InfoMessage"] = new InfoMessage("Kurs '" + model.Naziv + "' uspješno pohranjen u bazu.", InfoMessageType.success);
+                }
+                catch (Exception)
+                {
+                    TempData["InfoMessage"] = new InfoMessage("Kurs '" + model.Naziv + "' nije pohranjen u bazu.", InfoMessageType.danger);
+                }
+            }
+            else
+            {
+                model.KursTipoviDDL = KursVM.KursTipoviDDLSet(db.KursTipovi.ToList(), model.KursTipID);
+                return View(model);
+            }
+
+            return RedirectToAction("Prikaz");
+        }
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Kurs k = db.Kursevi.Find(id);
+            if (k == null)
+            {
+                return HttpNotFound();
+            }
+            return View(new KursVM(k,db.KursTipovi.ToList()));
+        }
+        [HttpPost]
+        public ActionResult Edit(KursVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                Kurs k=model.ToKurs();
+                db.Kursevi.Attach(k);
+                db.Entry(k).State = System.Data.Entity.EntityState.Modified;
+                try
+                {
+                    db.SaveChanges();
+                    TempData["InfoMessage"] = new InfoMessage("Kurs '" + model.Naziv + "' uspješno editovan.", InfoMessageType.success);
+                }
+                catch (Exception)
+                {
+                    TempData["InfoMessage"] = new InfoMessage("Kurs '" + model.Naziv + "' nije editovan.", InfoMessageType.danger);
+                }
+            }
+            else
+            {
+                model.KursTipoviDDL = KursVM.KursTipoviDDLSet(db.KursTipovi.ToList(), model.KursTipID);
+                return View(model);
+            }
+
+            return RedirectToAction("Prikaz");
+        }
+
+        //Urediti Details and Edit na prikazu za sve tri tabele kategorija,tip,kurs da budu na istom View-u
+        public ActionResult Prikaz()
+        {
+            if (TempData["InfoMessage"] != null)
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+            return View(db.Kursevi.AsNoTracking().ToList());
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

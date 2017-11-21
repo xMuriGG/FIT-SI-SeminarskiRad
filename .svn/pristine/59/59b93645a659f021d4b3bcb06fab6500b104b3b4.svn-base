@@ -1,0 +1,20 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursTipVM
+@{
+    ViewBag.Title = "KursTip";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+<h2>Kurs tip create</h2>
+<hr />
+
+@{Html.RenderPartial("_TipKursaEdit",Model);}
+
+<div>
+    @Html.ActionLink("Go to List", "KursTipPrikaz")
+</div>
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}
+
+

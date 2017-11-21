@@ -1,0 +1,73 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursKategorijaVM
+@{
+    ViewBag.Title = "KursKategorijaCreate";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+
+<h2>Kurs kategorija create</h2>
+<hr />
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+<div class="row">
+    <!-- Button trigger modal -->
+    <button type="button" title="Dodaj kategoriju" class="btn btn-primary glyphicon glyphicon-plus col-md-3" data-toggle="modal" data-target="#myModal"></button>
+</div>
+<br />
+
+<div id="datumiObracuna" class="col-md-3 row">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="list-group text-center">
+                    <p class="list-group-item active">@Html.DisplayNameFor(model => model.Naziv)</p>
+                    @foreach (var item in Model.KursKategorije)
+                    {
+                        @Html.ActionLink(item.Naziv,"KursTipCreate",
+                             new { kursKategorijaID = item.KursKategorijaID },
+                        new { @class = "list-group-item" })
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Unos kategorije kursa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (@Html.BeginForm())
+            {
+                <div class="modal-body text-center">
+                    @Html.EditorFor(model => model.Naziv, new { htmlAttributes = new { @class = "form-control", PlaceHolder="Naziv kategorije" } })
+                    @Html.ValidationMessageFor(model => model.Naziv, "", new { @class = "text-danger" })
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,7 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Index sb Test</h2>
+

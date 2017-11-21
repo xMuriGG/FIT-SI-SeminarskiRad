@@ -1,0 +1,60 @@
+﻿@model CZE.Web.Areas.Osoba.Models.OsobaDetailsVM
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Osoba details</h2>
+<hr />
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Osoba</a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div>
+                    @{Html.RenderPartial("_OsobaDetails", Model);}
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model.IsKandidat)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Kandidat</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @{Html.RenderPartial("_KandidatDetails", Model.Kandidat);}
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.IsZaposlenik)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Zaposlenik</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @{Html.RenderPartial("_ZaposlenikDetails", Model.Zaposlenik);}
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<hr />
+<p>
+    @Html.ActionLink("Back to List", "PrikazOsoba") |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.OsobaID })
+</p>

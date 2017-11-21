@@ -1,0 +1,88 @@
+﻿@model List<CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM>
+@{
+    ViewBag.Title = "OsobeZaPromoteAll";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+@section HeadLinks
+{
+    <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+}
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>Promocija zahtjeva za prijavu</h4></div>
+    <div class="panel-body">
+        <div class="btn-group">
+
+            <a class="btn btn-primary" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#osobeAjax"
+               href="~/AdministrativniRadnik/AdministrativniRadnik/PromoteOsobeAllList">
+                <span class="glyphicon glyphicon-filter"></span>
+                All
+                <span class="badge"> @Model.Count  </span>
+            </a>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+
+            <ul class="dropdown-menu">
+                <li>
+
+                    @Ajax.ActionLink("Kandidat", "PromoteOsobeToKandidatList", new AjaxOptions()
+            {
+                HttpMethod = "GET",
+                UpdateTargetId = "osobeAjax",
+                InsertionMode = InsertionMode.Replace,
+                OnSuccess = "SetTable"
+            })
+                </li>
+                <li>
+
+                    @Ajax.ActionLink("Zaposlenik", "PromoteOsobeToZaposlenikList", new AjaxOptions()
+            {
+                HttpMethod = "GET",
+                UpdateTargetId = "osobeAjax",
+                InsertionMode = InsertionMode.Replace,
+                OnSuccess = "SetTable"
+            })
+                </li>
+            </ul>
+        </div>
+
+
+        <div id="osobeAjax">
+            @Html.Partial("_PromoteOsobeTable", Model)
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@section JavaScriptFiles
+{
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        function SetTable() {
+            $('#promote').DataTable({
+                responsive: true,
+                bLengthChange: false,
+                bFilter: false,
+                bInfo: false
+            });
+            $("[data-toggle=popover]").popover();
+        };
+        $(document).ready(function () {
+            SetTable();
+        });
+    </script>
+}

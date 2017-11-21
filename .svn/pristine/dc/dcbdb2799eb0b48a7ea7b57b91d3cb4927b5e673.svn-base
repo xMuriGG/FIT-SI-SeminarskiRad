@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Data.Models;
+using CZE.Data;
+using CZE.Web.Models;
+using System.Web.Script.Serialization;
+namespace CZE.Web.Controllers
+{
+    public class HomeController : Controller
+    {
+        CZEContext ctx = new CZEContext();
+        // GET: Home
+        public ActionResult Index(int brKandidata = 0)
+        {
+            if (TempData["InfoMessage"] != null)
+            {
+                ViewBag.InfoMessage = (Helper.InfoMessage)TempData["InfoMessage"];
+            }
+            ViewBag.Osoba = ctx.Osobe.Count();
+            ViewBag.Kandidata = ctx.Kandidats.Count();
+            ViewBag.Zaposlenika = ctx.Zaposlenici.Count();
+
+            #region BrojKandidataTest
+            //Srediti kod; Razdvojiti view; Napraviti novu funkciju ; Prepraviti na Ajax; 
+            List<SelectListItem> listaGodina = ctx.Kandidats
+                .Select(s => new SelectListItem
+                {
+                    Value = s.DatumUpisa.Year.ToString(),
+                    Text = s.DatumUpisa.Year.ToString(),
+                    Selected = s.DatumUpisa.Year == brKandidata
+                })
+                .Distinct()
+                .OrderByDescending(x => x)
+                .ToList();
+            ViewBag.GodineChart = listaGodina;
+
+
+            int godina = brKandidata != 0 ? brKandidata : 2017;
+            List<BrojKandidataChart> forChart = ctx.Kandidats.Where(x => x.DatumUpisa.Year == godina)
+                .GroupBy(x => x.DatumUpisa.Month)
+                .Select(g => new BrojKandidataChart() { Mjesec = godina + "-" + g.Key, Count = g.Count() })
+                .ToList();
+
+
+            //var jsonSerialiser = new JavaScriptSerializer();
+            //string json = jsonSerialiser.Serialize(forChart).Replace("\"", "");
+            ViewBag.BrojKandidataChart = forChart;
+            #endregion
+
+
+            return View();
+        }
+
+    }
+}

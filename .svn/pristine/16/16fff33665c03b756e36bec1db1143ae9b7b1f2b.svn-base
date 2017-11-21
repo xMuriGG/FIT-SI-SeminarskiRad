@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Data.Models;
+using System.ComponentModel.DataAnnotations;
+using CZE.Data;
+namespace CZE.Web.Areas.AdministrativniRadnik.Models
+{
+    public class CertifikatEditVM
+    {
+        public int CertifikatID { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Datum odobrenja")]
+        public DateTime DatumOdobrenja { get; set; }
+        [Display(Name = "Bilješke")]
+        [DataType(DataType.MultilineText)]
+        public string Biljeske { get; set; }
+        [Required(ErrorMessage = "Grupa/kandidat je obavezno polje.")]
+        public int GrupaKandidatiID { get; set; }
+        public List<SelectListItem> GrupaKandidatiDDL { get; set; }
+
+        public int ZaposlenikID { get; set; }
+
+        public CertifikatEditVM() { }
+        public CertifikatEditVM(Certifikat c)
+        {
+            this.CertifikatID = c.CertifikatID;
+            this.DatumOdobrenja = c.DatumOdobrenja;
+            this.Biljeske = c.Biljeske;
+            this.GrupaKandidatiID = c.GrupaKandidatiID;
+            this.ZaposlenikID = c.ZaposlenikID;
+        }
+
+        public Certifikat ToCertifikat()
+        {
+            Certifikat c = new Certifikat();
+            c.CertifikatID = this.CertifikatID;
+            c.DatumOdobrenja = this.DatumOdobrenja;
+            c.Biljeske = this.Biljeske;
+            c.GrupaKandidatiID = this.GrupaKandidatiID;
+            c.ZaposlenikID = this.ZaposlenikID;
+            return c;
+        }
+        public static List<SelectListItem> GrupaKandidatiDDLSet(CZEContext db, int grupaKandidatiId = 0)
+        {
+            return db.GrupeKandidati
+                .AsNoTracking()
+                .Select(s => new SelectListItem
+                {
+                    Text = s.Kandidat.Osoba.Ime + " " + s.Kandidat.Osoba.Prezime
+                    + " - " + s.Grupa.Naziv
+                    + "|" + s.Grupa.Kurs.Naziv
+                    + "|" + s.Grupa.Kurs.KursTip.Naziv,
+                    Value = s.GrupaKandidatiID.ToString(),
+                    Selected = s.GrupaKandidatiID == grupaKandidatiId
+                })
+                .ToList();
+        }
+    }
+
+}

@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Data.Models;
+using CZE.Data;
+namespace CZE.Web.Controllers
+{
+    public class HomeController : Controller
+    {
+        CZEContext ctx = new CZEContext();
+        // GET: Home
+        public ActionResult Index()
+        {
+            if (TempData["InfoMessage"]!=null)
+            {
+                ViewBag.InfoMessage = (Helper.InfoMessage)TempData["InfoMessage"];
+            }
+            ViewBag.Osoba = ctx.Osobe.Count();
+            ViewBag.Kandidata = ctx.Kandidats.Count();
+            return View();
+        }
+    }
+}

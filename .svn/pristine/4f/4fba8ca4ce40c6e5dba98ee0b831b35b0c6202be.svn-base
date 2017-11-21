@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CZE.Data.Models
+{
+    [Table("Kandidati")]
+    public class Kandidat
+    {
+        [Key()]
+        [ForeignKey("Osoba")]
+        public int KandidatID { get; set; }
+        public Osoba Osoba { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime DatumUpisa { get; set; }
+        public string Biljeske { get; set; }
+
+        public virtual List<UplataKandidata> UplateKandidata { get; set; }
+        public virtual List<GrupaKandidati> GrupaKandidati { get; set; }
+        public virtual List<Prisustvo> Prisustva { get; set; }
+
+    }
+}

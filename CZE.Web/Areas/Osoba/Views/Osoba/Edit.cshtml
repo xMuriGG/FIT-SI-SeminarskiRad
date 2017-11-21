@@ -1,0 +1,23 @@
+﻿@model CZE.Web.Areas.Osoba.Models.OsobaCreateVM
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Edit osoba</h2>
+<hr />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    {Html.RenderPartial("_Edit", Model);}
+}
+@Html.ActionLink(" ", "PrikazOsoba", null, new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+
+
+@section JavaScriptFiles
+{
+    <script type="text/javascript" src="@Url.Content("/Scripts/MojeSkripte/UnosOsobe.js")"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

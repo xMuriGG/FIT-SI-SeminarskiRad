@@ -1,0 +1,42 @@
+﻿@model CZE.Web.Areas.AdministratorSistema.Models.KorisnickiNalogEditVM
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.KorisnickiNalogID)
+        <div class="form-group">
+            @Html.LabelFor(model => model.KorisnickoIme, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.KorisnickoIme, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.KorisnickoIme, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Lozinka, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Lozinka, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Lozinka, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UlogaKorisnika, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EnumDropDownListFor(model => model.UlogaKorisnika, "Uloga", new { @class = "form-control" } )
+                @Html.ValidationMessageFor(model => model.UlogaKorisnika, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Snimi" />
+        </div>
+
+    </div>
+
+}

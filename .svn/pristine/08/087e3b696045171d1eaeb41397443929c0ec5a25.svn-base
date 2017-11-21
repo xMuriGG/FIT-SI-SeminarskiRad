@@ -1,0 +1,3 @@
+﻿@{
+    Layout = "~/Areas/Direktor/Views/Shared/_Layout.cshtml";
+}

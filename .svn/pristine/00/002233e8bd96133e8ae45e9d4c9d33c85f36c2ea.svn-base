@@ -1,0 +1,53 @@
+﻿@model IEnumerable<CZE.Data.Models.Kurs>
+@{
+    Layout = null;
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Kursevi | 
+        @Ajax.ActionLink(" ", "Create", "Kursevi",
+                 routeValues: new { kursTipId=Model.FirstOrDefault().KursTipID},
+                 ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikazInner" },
+                 htmlAttributes: new { @class = "btn btn-primary glyphicon glyphicon-plus", title = "Kurs create" })
+    </div>
+    <div id="kursPrikazInner" class="panel-body">
+        @if (InfoMessage != null)
+        {
+            <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <strong>@InfoMessage.Message</strong>
+                <br />
+            </div>
+        }
+
+            <table id="kurseviTable" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Naziv</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Naziv)</td>
+                            <td class="text-right">
+                                @Ajax.ActionLink(" ", "Edit",
+                            routeValues: new { id = item.KursID },
+                         ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikazInner" },
+                            htmlAttributes: new { @class = "glyphicon glyphicon-edit", style = "font-size:20px", title = "Edit" })
+                                @Ajax.ActionLink(" ", "Details",
+                            routeValues: new { id = item.KursID },
+                         ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikazInner" },
+                         htmlAttributes: new { @class = "glyphicon glyphicon-list-alt", style = "font-size:20px", title = "Details" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+    </div>
+</div>

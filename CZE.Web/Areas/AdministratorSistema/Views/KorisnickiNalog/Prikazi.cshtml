@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM>
+@{
+    ViewBag.Title = "Prikazi";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2>Korisnicki nalog create</h2>
+
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.ImePrezime)</th>
+                    <th>@Html.DisplayNameFor(model => model.DatumRodjenja)</th>
+                    <th>@Html.DisplayNameFor(model => model.Spol)</th>
+                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>Uloge</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.ImePrezime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DatumRodjenja)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Spol)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                                @if (item.IsZaposlenik)
+                                {
+                                    <button type="button" class="btn btn-default"
+                                            data-container="body" data-toggle="popover" data-placement="left"
+                                            data-content="Osoba je zaposlenik."
+                                            data-original-title="" title="">
+                                        <span class="fa fa-archive fa-fw"></span>
+                                    </button>
+                                }
+                                @if (item.IsKandidat)
+                                {
+                                    <button type="button" class="btn btn-default"
+                                            data-container="body" data-toggle="popover" data-placement="left"
+                                            data-content="Osoba je kandidat. "
+                                            data-original-title="" title="">
+                                        <span class="fa fa-graduation-cap fa-fw"></span>
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            @Html.ActionLink(" ", "Create", new { id = item.OsobaID }, new { @class = "glyphicon glyphicon-plus-sign", style = "font-size:22px", title = "Kreiraj korisnički nalog" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section JavaScriptFiles{
+    <script>
+        $("[data-toggle=popover]")
+          .popover()
+    </script>
+}

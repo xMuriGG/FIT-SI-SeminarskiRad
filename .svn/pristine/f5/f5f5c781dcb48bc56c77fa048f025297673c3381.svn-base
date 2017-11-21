@@ -1,0 +1,58 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data.Entity;
+
+namespace CZE.Web.Helper
+{
+    public class Autentifikacija
+    {
+        private const string LogiraniKorisnik = "logirani_korisnik";
+        public static void PokreniNovuSesiju(KorisnickiNalog korisnickiNalog, HttpContextBase context, bool zapamtiPassword)
+        {
+            context.Session.Add(LogiraniKorisnik, korisnickiNalog);
+
+            if (zapamtiPassword)
+            {
+                HttpCookie cookie = new HttpCookie("_mvc_session", korisnickiNalog != null ? korisnickiNalog.KorisnickiNalogID.ToString() : "");
+                cookie.Expires = DateTime.Now.AddDays(10);
+                context.Response.Cookies.Add(cookie);
+            }
+        }
+        public static KorisnickiNalog GetLogiraniKorisnik(HttpContextBase context)
+        {
+            KorisnickiNalog korisnik = (KorisnickiNalog)context.Session[LogiraniKorisnik];
+
+            if (korisnik != null)
+                return korisnik;
+
+            HttpCookie cookie = context.Request.Cookies.Get("_mvc_session");
+
+            if (cookie == null)
+                return null;
+
+            long userId;
+            try
+            {
+                userId = Int64.Parse(cookie.Value);
+            }
+            catch
+            {
+                return null;
+            }
+
+            using (CZEContext db = new CZEContext())
+            {
+                KorisnickiNalog k = db.KorisnickiNalozi
+                    .Include(x => x.Osoba)
+                    .SingleOrDefault(x => x.KorisnickiNalogID == userId);
+                   
+                PokreniNovuSesiju(k, context, true);
+                return k;
+            }
+        }
+    }
+}

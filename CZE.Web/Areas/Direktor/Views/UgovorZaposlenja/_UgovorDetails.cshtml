@@ -1,0 +1,34 @@
+﻿@model CZE.Web.Areas.Direktor.Models.UgovorZaposlenjaDetailsVM
+
+<dl class="dl-horizontal">
+    <dt>@Html.DisplayNameFor(model => model.PozicijaKompanije)</dt>
+    <dd>@Html.DisplayFor(model => model.PozicijaKompanije.Naziv)</dd>
+
+    <dt>@Html.DisplayNameFor(model => model.DatumPocetkaUgovora)</dt>
+    <dd>@Html.DisplayFor(model => model.DatumPocetkaUgovora)</dd>
+
+    <dt>@Html.DisplayNameFor(model => model.Period)</dt>
+    <dd>@(Model.Period ==null?"Neodređeno":Model.Period.ToString())</dd>
+
+    <dt>@Html.DisplayNameFor(model => model.Koeficijent)
+    <dt>
+    <dd>@Html.DisplayFor(model => model.Koeficijent)</dd>
+
+    <dt>@Html.DisplayNameFor(model => model.Status)</dt>
+    <dd>@(Model.Status ? "Aktivan" : "Neaktivan")</dd>
+
+    @if (Model.Prilog)
+    {
+        <dt>Preuzmi ugovor</dt>
+        <dd>
+            @Html.ActionLink(" ", "Download",
+                new { id = Model.UgovorZaposlenjaID },
+                new { @class = "glyphicon glyphicon-download-alt", style = "font-size:20px" })
+        </dd>
+    }
+
+    <dt>@Html.DisplayNameFor(model => model.OpisPosla)</dt>
+    <dd>@Html.DisplayFor(model => model.OpisPosla)</dd>
+
+</dl>
+

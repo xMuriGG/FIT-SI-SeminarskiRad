@@ -1,0 +1,31 @@
+﻿using CZE.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace CZE.Web.Areas.Osoba.Models
+{
+    public class OsobaLessDetailsVM
+    {
+         public int OsobaID { get; set; }
+        public string Ime { get; set; }
+        public string Prezime { get; set; }
+        public Spol Spol { get; set; }
+        public string Email { get; set; }
+        public string Adresa { get; set; }
+        public  OsobaLessDetailsVM()
+        {
+
+        }
+        public OsobaLessDetailsVM(Data.Models.Osoba o)
+        {
+            this.OsobaID = o.OsobaID;
+            this.Ime = o.Ime;
+            this.Prezime = o.Prezime;
+            this.Spol = o.Spol;
+            this.Email = o.Email;
+            this.Adresa = o.Adresa;
+        }
+    }
+}

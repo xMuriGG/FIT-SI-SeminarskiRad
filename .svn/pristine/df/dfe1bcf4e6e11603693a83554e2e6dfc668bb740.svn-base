@@ -1,0 +1,55 @@
+﻿@model CZE.Web.Areas.Direktor.Models.UgovorZaposlenjaDetailsVM
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Details</h2>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Osoba</a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div>
+                    @{Html.RenderPartial("~/Areas/Osoba/Views/Osoba/_OsobaDetails.cshtml",new CZE.Web.Areas.Osoba.Models.OsobaDetailsVM(Model.Zaposlenik.Osoba));}                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Zaposlenik</a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+                @{Html.RenderPartial("~/Areas/Osoba/Views/Osoba/_ZaposlenikDetails.cshtml", Model.Zaposlenik);}             
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Ugovor</a>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse in">
+            <div class="panel-body">
+                @{Html.RenderPartial("_UgovorDetails", Model);}
+              
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<p>
+    @Html.ActionLink("Back to List", "PrikazList")
+</p>

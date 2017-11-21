@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CZE.Data.Models;
+using CZE.Data.DACZE;
+namespace CZE.Web.Controllers
+{
+    public class HomeController : Controller
+    {
+        CZEContext ctx = new CZEContext();
+        // GET: Home
+        public ActionResult Index()
+        {
+
+            //ctx.Osobe.Add(new Osoba() { Godine = 24, Ime = "Muri" });
+            //ctx.SaveChanges();
+            return View();
+        }
+    }
+}

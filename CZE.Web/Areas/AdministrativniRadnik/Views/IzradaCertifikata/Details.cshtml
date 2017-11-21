@@ -1,0 +1,132 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.CertifikatDetailsVM
+@{
+    ViewBag.Title = "Certifikat details";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading"><h2>Certifikat details</h2></div>
+    <div class="panel-body">
+        <div class="panel-group" id="accordionMain">
+
+            <!-- Kandidat-->
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionMain" href="#collapseKandidat">Kandidat</a>
+                    </h4>
+                </div>
+                <div id="collapseKandidat" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="panel-group" id="accordion1">
+                            <!-- Osoba-->
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">Osoba details</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div>
+                                            @{Html.RenderPartial("~/Areas/Osoba/Views/Osoba/_OsobaDetails.cshtml", Model.OsobaDetails);}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Osoba-->
+                            <!-- Kandidat-->
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseTwo">Kandidat details</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        @{Html.RenderPartial("~/Areas/Osoba/Views/Osoba/_KandidatDetails.cshtml", Model.OsobaDetails.Kandidat);}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Kandidat-->
+                        </div>
+                    </div>
+                </div><!-- /collapseKandidat-->
+            </div><!-- /Kandidat-->
+            <!-- Grupa-->
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionMain" href="#collapseGrupa">Grupa</a>
+                    </h4>
+                </div>
+                <div id="collapseGrupa" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <!-- PanelGrupa-->
+
+                        <div class="panel-group" id="accordionGrupa">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordionGrupa" href="#collapseGOne">Tip kursa</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseGOne" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div>
+                                            @{Html.RenderPartial("~/Areas/AdministrativniRadnik/Views/KursTip/_KursTipDetails.cshtml", Model.GrupaKursTipDetails.KursTip);}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordionGrupa" href="#collapseGTwo">Kurs</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseGTwo" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        @{Html.RenderPartial("~/Areas/AdministrativniRadnik/Views/Kursevi/_KursDetails.cshtml", Model.GrupaKursTipDetails.Kurs);}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordionGrupa" href="#collapseGThree">Grupa</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseGThree" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        @{Html.RenderPartial("~/Areas/AdministrativniRadnik/Views/Grupa/_GrupaDetails.cshtml", Model.GrupaKursTipDetails);}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div><!-- /PanelGrupa-->
+                </div>
+            </div><!-- /Grupa-->
+            <!-- Certifikat-->
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionMain" href="#collapseCertifikat">Certifikat</a>
+                    </h4>
+                </div>
+                <div id="collapseCertifikat" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        @{Html.RenderPartial("~/Areas/AdministrativniRadnik/Views/IzradaCertifikata/_CertifikatDetails.cshtml", Model);}
+                    </div>
+                </div>
+
+            </div><!-- /Certifikat-->
+
+        </div><!-- /accordionMain-->
+    <br />
+        <p>@Html.ActionLink(" ", "Prikaz", null, new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })</p> 
+    </div><!-- /MainPanelBody-->
+</div><!-- /MainPanel-->

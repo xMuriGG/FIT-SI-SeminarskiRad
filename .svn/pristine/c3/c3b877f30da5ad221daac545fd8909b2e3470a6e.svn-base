@@ -1,0 +1,31 @@
+﻿<li>
+    <a href="#"><i class="fa fa-user fa-fw"></i> Direktor <span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="#">Platna lista <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <li>
+                    <a href="~/Direktor/PlatnaLista/ObracunskiPeriodCreate">Obracunski period</a>
+                </li>
+                <li>
+                    <a href="~/Direktor/PlatnaLista/PlatnaListaUnos">Unos plata</a>
+                </li>
+                <li>
+                    <a href="~/Direktor/PlatnaLista/PlatnaListaPrikaz">Prikaz plata</a>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">Ugovori zaposlenja <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <li>
+                    <a href="~/Direktor/UgovorZaposlenja/Create">Novi ugovor</a>
+                </li>
+                <li>
+                    <a href="~/Direktor/UgovorZaposlenja/PrikazList">Prikaz ugovora</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>

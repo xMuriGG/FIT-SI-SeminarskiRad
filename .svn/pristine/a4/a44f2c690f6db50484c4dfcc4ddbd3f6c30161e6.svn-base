@@ -1,0 +1,135 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using CZE.Web.Areas.Osoba.Models;
+using CZE.Web.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+
+namespace CZE.Web.Areas.Osoba.Controllers
+{
+    [Autorizacija(UlogeKorisnika.Kandidat, UlogeKorisnika.Administrativni_Radnik, UlogeKorisnika.Direktor, UlogeKorisnika.Administrator)]
+
+    public class OsobaController : Controller
+    {
+        private CZEContext db = new CZEContext();
+        public ActionResult Create()
+        {
+            string s = DateTime.Now.ToShortDateString();
+            OsobaCreateVM osobaVM = new OsobaCreateVM();
+
+            osobaVM.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View(osobaVM);
+        }
+        [HttpPost]
+        public ActionResult Create(OsobaCreateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Osobe.Add(model.ToOsoba());
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError(String.Empty, "Došlo je do greške prilikom validacije, provjeriti unesena polja.");
+                    model.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+                    return View(model);
+                }
+                TempData["InfoMessage"] = new InfoMessage("Osoba uspješno dodana", InfoMessageType.success);
+                return RedirectToAction("DashBoard", "Home", new { area = "" });
+            }
+            model.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View(model);
+        }
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Data.Models.Osoba osoba = db.Osobe.Find(id);
+            if (osoba == null)
+            {
+                return HttpNotFound();
+            }
+            OsobaCreateVM osobaVM = new OsobaCreateVM(osoba);
+            osobaVM.GradoviDDL = new SelectList(db.Gradovi, "GradID", "Naziv");
+            return View("Create", osobaVM);
+        }
+        [HttpPost]
+        public ActionResult Edit(OsobaCreateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.BrojeviTelefona.RemoveRange(db.BrojeviTelefona.Where(w => w.OsobaID == model.OsobaID).ToList());
+                db.BrojeviTelefona.AddRange(model.ToOsoba().BrojeviTelefona);
+                model.BrojeviTelefona = null;
+                db.Entry(model.ToOsoba()).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Osoba uspješno editovana", InfoMessageType.success);
+                return RedirectToAction("DashBoard", "Home", new { area = "" });
+            }
+            return View(model);
+        }
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Data.Models.Osoba osoba = db.Osobe.Find(id);
+            if (osoba == null)
+            {
+                return HttpNotFound();
+            }
+            return View(new OsobaDetailsVM(osoba));
+        }
+        public ActionResult PrikazOsoba()
+        {
+            if (TempData["InfoMessage"] != null)
+            {
+                ViewBag.InfoMessage = (Helper.InfoMessage)TempData["InfoMessage"];
+            }
+            return View(db.Osobe.ToList().Select(s => new OsobaLessDetailsVM(s)).ToList());
+        }
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Data.Models.Osoba osoba = db.Osobe.Find(id);
+            if (osoba == null)
+            {
+                return HttpNotFound();
+            }
+            try
+            {
+                db.Osobe.Remove(osoba);
+                db.SaveChanges();
+                TempData["InfoMessage"] = new InfoMessage("Osoba '" + osoba.Ime + " " + osoba.Prezime + "' uspješno obrisana.", InfoMessageType.success);
+            }
+            catch (Exception)
+            {
+                TempData["InfoMessage"] = new InfoMessage("Osobu '" + osoba.Ime + " " + osoba.Prezime + "' nije moguće obrisati: Osoba je zaposlenik ili kandidat.", InfoMessageType.danger);
+            }
+
+            return RedirectToAction("PrikazOsoba");
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

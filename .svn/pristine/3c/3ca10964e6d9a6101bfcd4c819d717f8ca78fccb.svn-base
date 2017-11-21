@@ -1,0 +1,21 @@
+﻿using CZE.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CZE.Data.DACZE
+{
+    public class CZEContext : DbContext
+    {
+        public CZEContext()
+            : base("CZEConnectionString")
+        {
+
+        }
+        public DbSet<Osoba> Osobe { get; set; }
+
+    }
+}

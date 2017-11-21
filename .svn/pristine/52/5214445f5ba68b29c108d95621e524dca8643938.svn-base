@@ -1,0 +1,33 @@
+﻿<li>
+    <a href="#"><i class="fa fa-archive fa-fw"></i> Administrativni radnik<span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="~/AdministrativniRadnik/AdministrativniRadnik/PromoteOsobeMain">Osobe za promociju</a>
+        </li>
+        <li>
+            <a href="~/AdministrativniRadnik/UplataKandidata/Initial">Uplate kandidata</a>
+        </li>
+        <li>
+            <a href="#">Kurs<span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <li>
+                    <a href="~/AdministrativniRadnik/KursTip/KursKategorijaCreate">Kategorija create</a>
+                </li>
+                <li>
+                    <a href="~/AdministrativniRadnik/KursTip/KursTipPrikaz">Prikaz</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">Certifikat<span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <li>
+                    <a href="~/AdministrativniRadnik/IzradaCertifikata/Create">Create</a>
+                </li>
+                <li>
+                    <a href="~/AdministrativniRadnik/IzradaCertifikata/Prikaz">Prikaz</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>

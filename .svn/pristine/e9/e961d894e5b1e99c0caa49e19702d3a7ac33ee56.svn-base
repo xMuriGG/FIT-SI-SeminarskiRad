@@ -1,0 +1,47 @@
+﻿using CZE.Data;
+using CZE.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Data.Entity;
+using CZE.Web.Helper;
+namespace CZE.Web.Controllers
+{
+    public class AutentifikacijaController : Controller
+    {
+
+        CZEContext db = new CZEContext();
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Autentificate(string korisnickoIme, string lozinka, string zapamti)
+        {
+            KorisnickiNalog k = db.KorisnickiNalozi
+                .Include(x => x.Osoba)
+                .FirstOrDefault(x =>x.Aktivan &&( (x.KorisnickoIme == korisnickoIme || x.Osoba.Email == korisnickoIme) && x.Lozinka == lozinka));
+            if (k == null)
+            {
+                return RedirectToAction("Index");
+            }
+            Autentifikacija.PokreniNovuSesiju(k, HttpContext, (zapamti=="on"));
+            return RedirectToAction("Index", "Home");
+        }
+        public ActionResult Logout()
+        {
+            Autentifikacija.PokreniNovuSesiju(null, HttpContext, true);
+            return RedirectToAction("Index");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

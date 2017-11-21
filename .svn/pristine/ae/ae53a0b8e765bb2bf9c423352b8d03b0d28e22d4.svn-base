@@ -1,0 +1,42 @@
+﻿using CZE.Data;
+using CZE.Web.Areas.AdministrativniRadnik.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Data.Entity;
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    public class UplataKandidataController : Controller
+    {
+        CZEContext db = new CZEContext();
+        public ActionResult Initial()
+        {
+            List<Data.Models.Kandidat> kandidati = db.Kandidats.AsNoTracking().Include(x=>x.Osoba).ToList();
+            List<UplataKandidataTableVM> kandidatiTable = new List<UplataKandidataTableVM>();
+            foreach (var item in kandidati)
+            {
+                kandidatiTable.Add(new UplataKandidataTableVM(item));
+            }
+            return View(kandidatiTable);
+        }
+        public ActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Create(int a)
+        {
+            return View();
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

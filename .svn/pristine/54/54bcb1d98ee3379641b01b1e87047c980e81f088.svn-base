@@ -1,0 +1,43 @@
+﻿@model IEnumerable<CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM>
+<table id="promote" class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.ImePrezime)</th>
+            <th>@Html.DisplayNameFor(model => model.DatumRodjenja)</th>
+            <th>@Html.DisplayNameFor(model => model.Spol)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+            <th>Promote to</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ImePrezime)</td>
+                <td>@Html.DisplayFor(modelItem => item.DatumRodjenja)</td>
+                <td>@Html.DisplayFor(modelItem => item.Spol)</td>
+                <td>
+                    <button type="button" class="btn btn-default"
+                            data-container="body" data-toggle="popover" data-placement="left"
+                            data-content="@item.Email"
+                            data-original-title="" title="">
+                        <span class="glyphicon glyphicon-transfer"></span>
+                    </button>
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                        @if (!item.IsZaposlenik)
+                        {
+                            @Html.ActionLink("Zaposlenik", "ZaposlenikCreate", new { id = item.OsobaID }, new { @class = "btn btn-outline btn-danger " })
+                        }
+                        @if (!item.IsKandidat)
+                        {
+                            @Html.ActionLink("Kandidat", "KandidatCreate", new { id = item.OsobaID }, new { @class = "btn btn-outline btn-success" })
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

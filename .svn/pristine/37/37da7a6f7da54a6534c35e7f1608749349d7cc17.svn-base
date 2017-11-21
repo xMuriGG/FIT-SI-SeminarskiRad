@@ -1,0 +1,87 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursKategorijaVM
+@{
+    ViewBag.Title = "KursKategorijaCreate";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+
+<h2>Kurs kategorija create</h2>
+<hr />
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+<!-- Button trigger modal -->
+<button id="modalBTN" type="button" data-toggle="modal" data-target="#myModal" hidden></button>
+
+
+<div id="datumiObracuna" class="col-md-4 row">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="list-group text-center">
+                    <p class="list-group-item active">
+
+                        @Ajax.ActionLink("Nova kategorija", "_Create", "KursKategorija",
+                            routeValues: null,
+                                     ajaxOptions: new AjaxOptions { UpdateTargetId = "mEdit", OnSuccess = "ShowModal" },
+                            htmlAttributes: new { @class = "btn btn-primary ", title = "Kurs kategorija create" })
+                    </p>
+
+                    <table width="100%">
+                        @foreach (var item in Model.KursKategorije)
+                        {
+                            <tr>
+                                <td>
+                                    <a class="list-group-item clearfix" href="/AdministrativniRadnik/KursTip/KursTipCreate?kursKategorijaID=@item.KursKategorijaID">
+                                        @item.Naziv
+                                    </a>
+                                </td>
+                                <td width="20%">
+                                    @Ajax.ActionLink(" ", "_Edit", routeValues: new { id = item.KursKategorijaID },
+                          ajaxOptions: new AjaxOptions { UpdateTargetId = "mEdit", OnSuccess = "ShowModal", HttpMethod = "GET" },
+                                htmlAttributes: new { @class = "glyphicon glyphicon-edit", style = "font-size:20px", title = "Edit" }
+                                )
+                                @Html.ActionLink(" ", "Delete", new { id = item.KursKategorijaID }, new { @class = "glyphicon glyphicon-remove", style = "font-size:20px", title = "Delete" })
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Unos kategorije kursa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="mEdit">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        function ShowModal() {
+            $.validator.unobtrusive.parse("#EditForm");
+            $("#modalBTN").click();
+        };
+    </script>
+}

@@ -1,0 +1,14 @@
+﻿@model CZE.Data.Models.KursTip
+
+@{
+    ViewBag.Title = "KursTipDetails";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Kurs tip details</h2>
+<hr />
+@{Html.RenderPartial("_KursTipDetails", Model);}
+<p>
+    @Html.ActionLink(" ", "KursTipPrikaz",null,new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+    @Html.ActionLink(" ", "KursTipEdit", new { id = Model.KursTipID }, new { @class = "glyphicon glyphicon-edit", style = "font-size:20px", title = "Edit" }) 
+</p>

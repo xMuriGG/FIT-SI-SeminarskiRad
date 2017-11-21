@@ -1,0 +1,81 @@
+﻿using CZE.Data;
+using CZE.Web.Areas.AdministrativniRadnik.Models;
+using CZE.Web.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Controllers
+{
+    public class IzradaCertifikataController : Controller
+    {
+        CZEContext db = new CZEContext();
+        // GET: AdministrativniRadnik/IzradaCertifikata
+        public ActionResult Create()
+        {
+            CertifikatEditVM cVM = new CertifikatEditVM();
+            cVM.GrupaKandidatiDDL = CertifikatEditVM.GrupaKandidatiDDLSet(db);
+            cVM.DatumOdobrenja = DateTime.Now;
+            return View(cVM);
+        }
+        [HttpPost]
+        public ActionResult Create(CertifikatEditVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.GrupaKandidatiDDL = CertifikatEditVM.GrupaKandidatiDDLSet(db, model.GrupaKandidatiID);
+                return View(model);
+            }
+            model.ZaposlenikID = Autentifikacija.GetLogiraniKorisnik(HttpContext).KorisnickiNalogID;
+            db.Certifikati.Add(model.ToCertifikat());
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception){}
+
+            return View("Prikazi");
+        }
+        public ActionResult Prikazi(bool partial=false)
+        {
+            List<CertifikatTableVM> list = db.Certifikati
+                .AsNoTracking()
+                .Select(s => new CertifikatTableVM { 
+                CertifikatId=s.CertifikatID,
+                ImePrezime = s.GrupaKandidati.Kandidat.Osoba.Ime + " " + s.GrupaKandidati.Kandidat.Osoba.Prezime,
+                DatumRodjenja=s.GrupaKandidati.Kandidat.Osoba.DatumRodjenja,
+                DatumOdobrenja=s.DatumOdobrenja,
+                Uruceno=s.Uruceno,
+                GrupaNaziv=s.GrupaKandidati.Grupa.Naziv,
+                KursNaziv=s.GrupaKandidati.Grupa.Kurs.Naziv,
+                TipNaziv=s.GrupaKandidati.Grupa.Kurs.KursTip.Naziv,
+                })
+                .ToList();
+            if (partial)
+            {
+                return PartialView("_CertifikatiTable", list);
+            }
+            return View(list);
+        }
+        public ActionResult Uruci(int id)
+        {
+            var certifikat = db.Certifikati.AsNoTracking().First(x => x.CertifikatID == id);
+            certifikat.Uruceno = certifikat.Uruceno ? false : true;
+            db.Certifikati.Attach(certifikat);
+            db.Entry(certifikat).Property(x => x.Uruceno).IsModified=true;
+            db.SaveChanges();
+            return RedirectToAction("Prikazi", new { partial = true });
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

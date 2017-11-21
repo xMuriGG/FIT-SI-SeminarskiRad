@@ -1,0 +1,44 @@
+﻿@model IEnumerable<CZE.Web.Areas.Direktor.Models.UgovorZaposlenjaDetailsVM>
+<table id="prikaz" class="table">
+    <thead>
+        <tr>
+            <th>Ime i prezime</th>
+            <th>@Html.DisplayNameFor(model => model.DatumPocetkaUgovora)</th>
+            <th>@Html.DisplayNameFor(model => model.Period)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Status)</th>
+            <th class="text-center">Download</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(item.Zaposlenik.Osoba.Ime + " " + item.Zaposlenik.Osoba.Prezime)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DatumPocetkaUgovora)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Period)
+                </td>
+                <td class="text-center">
+                    @Ajax.ActionLink(item.Status ? "Aktivan" : "Neaktivan", "PromjenaStatusaUgovora",
+                            routeValues: new { id = item.UgovorZaposlenjaID },
+                            ajaxOptions: new AjaxOptions { UpdateTargetId = "UgovoriTable",OnSuccess="SetTable" },
+                   htmlAttributes: new { @class = item.Status ? "btn btn-success btn-xs" : "btn btn-danger btn-xs" }
+                                                                         
+                            )
+                </td>
+                <td class="text-center">
+                    @Html.ActionLink(" ", "Download", new { id = item.UgovorZaposlenjaID }, new { @class = "glyphicon glyphicon-download-alt", style = "font-size:17px", title = "Download" })
+                </td>
+
+                <td>                  
+                    @Html.ActionLink(" ", "Details", new { id = item.UgovorZaposlenjaID }, new { @class = "glyphicon glyphicon-list-alt", style = "font-size:20px",title="Details" })
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+

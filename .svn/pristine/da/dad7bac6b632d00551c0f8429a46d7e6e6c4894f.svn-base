@@ -1,0 +1,108 @@
+﻿@using CZE.Web.Helper;
+@using CZE.Data.Models;
+@{
+    LogiraniKorisnik lKorisnik = Autentifikacija.GetLogiraniKorisnik(Context);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CZE</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- MetisMenu CSS -->
+    <link href="~/Content/sb-admin-2/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="~/Content/sb-admin-2/dist/css/sb-admin-2.min.css" rel="stylesheet" />
+    <!-- Custom Fonts -->
+    <link href="~/Content/sb-admin-2/vendor/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+    @RenderSection("HeadLinks", required: false)
+
+</head>
+<body>
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            
+            @{Html.RenderPartial("_NavBarTop",lKorisnik??new LogiraniKorisnik());}
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="~/Home/DashBoard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+
+                        <!--Osoba-->
+                        @if (lKorisnik != null && lKorisnik.OdgovaraUlozi(UlogeKorisnika.Administrativni_Radnik, UlogeKorisnika.Direktor, UlogeKorisnika.Administrator))
+                        {
+                            { Html.RenderPartial("_UlogaOsoba"); }
+                        }
+
+                        <!--Kandidat-->
+                        @if (lKorisnik != null && lKorisnik.OdgovaraUlozi(UlogeKorisnika.Administrativni_Radnik, UlogeKorisnika.Direktor, UlogeKorisnika.Administrator))
+                        {
+                            {Html.RenderPartial("_UlogaKandidat");}
+                        }
+                        <!--Administrativni radnik-->
+                        @if (lKorisnik != null && lKorisnik.OdgovaraUlozi(UlogeKorisnika.Administrativni_Radnik, UlogeKorisnika.Direktor, UlogeKorisnika.Administrator))
+                        {
+                            {Html.RenderPartial("_UlogaAdministrativniRadnik");}
+                        }
+                        <!--Predavač-->
+                        @if (lKorisnik != null && lKorisnik.OdgovaraUlozi(UlogeKorisnika.Predavac,UlogeKorisnika.Administrativni_Radnik, UlogeKorisnika.Direktor, UlogeKorisnika.Administrator))
+                        {
+                            {Html.RenderPartial("_UlogaPredavac");}
+                        }
+                        <!--Direktor-->
+                        @if (lKorisnik != null && lKorisnik.OdgovaraUlozi(UlogeKorisnika.Direktor, UlogeKorisnika.Administrator))
+                        {
+                            {Html.RenderPartial("_UlogaDirektor");}
+                        }
+                        <!--Administrator sistema-->
+                        @if (lKorisnik != null && lKorisnik.OdgovaraUlozi(UlogeKorisnika.Administrator))
+                        {
+                            {Html.RenderPartial("_UlogaAdministratorSistema");}
+                        }
+
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+
+            <div id="MyContent" class="container body-content">
+                @RenderBody()
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+    <!-- Ajax -->
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/Content/sb-admin-2/vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="~/Content/sb-admin-2/dist/js/sb-admin-2.min.js"></script>
+
+    @RenderSection("JavaScriptFiles", required: false)
+</body>
+</html>

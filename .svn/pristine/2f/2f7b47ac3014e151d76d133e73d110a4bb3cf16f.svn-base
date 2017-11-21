@@ -1,0 +1,99 @@
+﻿@model CZE.Web.Areas.Osoba.Models.OsobaCreateVM
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Unos osobe</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model=>model.OsobaID)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Ime, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Ime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Ime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Prezime, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Prezime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Prezime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DatumRodjenja, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.DatumRodjenja, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DatumRodjenja, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Spol, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-4">
+                @Html.EnumDropDownListFor(model => model.Spol, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Spol, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Adresa, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Adresa, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Adresa, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.GradID, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-4">
+                @Html.DropDownListFor(model => model.GradID, Model.GradoviDDL, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GradID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!--Brojevi Telefona-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BrojeviTelefona, htmlAttributes: new { @class = "control-label col-md-3" })
+            @Html.Hidden("brojevaTelefona", (Model.BrojeviTelefona == null) ? "1" : Model.BrojeviTelefona.Count.ToString())
+            <div id="brojevi" class="col-md-9" style="margin-bottom:5px">
+                @Html.EditorFor(model => model.BrojeviTelefona)      
+            </div><!-- /#brojevi-end -->
+            <div class="col-md-offset-3 col-md-10">
+                <p>
+                    <input type="button" id="AddBtn" value="Add" class="btn btn-success btn-sm" />
+                    <input type="button" id="RemoveBtn" value="Remove" class="btn btn-danger btn-sm" />
+                </p>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class=" col-md-10">
+                <input id="submit" type="submit" value="Snimi" class="btn btn-default" onclick="return validiraj()" />
+            </div>
+        </div>
+    </div>
+
+}
+
+@section JavaScriptFiles
+{
+    <script type="text/javascript" src="@Url.Content("/Scripts/MojeSkripte/UnosOsobe.js")"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}
+

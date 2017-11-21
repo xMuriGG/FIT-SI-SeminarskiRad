@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Models
+{
+    public class CertifikatTableVM
+    {
+        public int CertifikatId { get; set; }
+        [Display(Name = "Kandidat")]
+        public string ImePrezime { get; set; }
+        [Display(Name = "Datum rođenja")]
+        [DataType(DataType.Date)]
+        public DateTime DatumRodjenja { get; set; }
+        [Display(Name = "Datum odobrenja")]
+        [DataType(DataType.Date)]
+        public DateTime DatumOdobrenja { get; set; }
+        [Display(Name = "Uručeno")]
+        public bool Uruceno { get; set; }
+        [Display(Name = "Kurs")]
+        public string KursNaziv { get; set; }
+        [Display(Name = "Tip")]
+        public string TipNaziv { get; set; }
+        
+    }
+}

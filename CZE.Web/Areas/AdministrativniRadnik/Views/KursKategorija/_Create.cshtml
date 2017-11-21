@@ -1,0 +1,12 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursKategorijaVM
+@using (Html.BeginForm("Create", "KursKategorija", FormMethod.Post, new {id="EditForm" }))
+{
+    <div class="modal-body text-center">
+        @Html.EditorFor(model => model.Naziv, new { htmlAttributes = new { @class = "form-control", PlaceHolder = "Naziv kategorije" } })
+        @Html.ValidationMessageFor(model => model.Naziv, "", new { @class = "text-danger" })
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Snimi</button>
+    </div>
+}

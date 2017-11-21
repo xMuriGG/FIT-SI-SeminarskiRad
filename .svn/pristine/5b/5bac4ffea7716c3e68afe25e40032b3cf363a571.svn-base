@@ -1,0 +1,44 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.CertifikatEditVM
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+}
+
+<h2>Izrada certifikata create</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.CertifikatID)
+        <div class="form-group">
+            @Html.LabelFor(model => model.GrupaKandidatiID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.DropDownListFor(model=>model.GrupaKandidatiID, Model.GrupaKandidatiDDL, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GrupaKandidatiID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DatumOdobrenja, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.DatumOdobrenja, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DatumOdobrenja, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Biljeske, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Biljeske, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Biljeske, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-4">
+                <input type="submit" value="Snimi" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+@Html.ActionLink(" ", "Prikaz", null, new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })

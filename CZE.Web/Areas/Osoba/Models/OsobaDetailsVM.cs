@@ -1,0 +1,57 @@
+﻿using CZE.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace CZE.Web.Areas.Osoba.Models
+{
+    public class OsobaDetailsVM
+    {
+        public int OsobaID { get; set; }
+        public string Ime { get; set; }
+        public string Prezime { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DatumRodjenja { get; set; }
+        public Spol Spol { get; set; }
+        public string Email { get; set; }
+        public string Adresa { get; set; }
+        public int GradID { get; set; }
+        [Display(Name = "Mjesto rodjenja")]
+        public bool IsZaposlenik { get; set; }
+        public bool IsKandidat { get; set; }
+
+        //Virtual reference      
+        public virtual Grad MjestoRodjenja { get; set; }
+        public virtual Data.Models.Kandidat Kandidat { get; set; }
+        public virtual Zaposlenik Zaposlenik { get; set; }
+        public virtual List<BrojTelefona> BrojeviTelefona { get; set; }
+
+
+        public OsobaDetailsVM()
+        {
+            MjestoRodjenja = new Grad();
+            Kandidat = new Data.Models.Kandidat();
+            Zaposlenik = new Zaposlenik();
+            BrojeviTelefona = new List<BrojTelefona>();
+        }
+        public OsobaDetailsVM(Data.Models.Osoba o)
+        {
+            this.OsobaID = o.OsobaID;
+            this.Ime = o.Ime;
+            this.Prezime = o.Prezime;
+            this.DatumRodjenja = o.DatumRodjenja;
+            this.Spol = o.Spol;
+            this.Email = o.Email;
+            this.Adresa = o.Adresa;
+            this.GradID = o.GradID;
+            this.MjestoRodjenja = o.MjestoRodjenja;
+            this.Kandidat= o.Kandidat;
+            this.Zaposlenik = o.Zaposlenik;
+            this.IsKandidat = o.Kandidat != null ? true : false;
+            this.IsZaposlenik = o.Zaposlenik != null ? true : false;
+            this.BrojeviTelefona = o.BrojeviTelefona;
+        }
+    }
+}

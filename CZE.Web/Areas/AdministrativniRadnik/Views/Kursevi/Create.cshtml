@@ -1,0 +1,31 @@
+﻿@model CZE.Web.Areas.AdministrativniRadnik.Models.KursVM
+
+@{
+    ViewBag.Title = "Kurs create";
+    Layout = null;
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Kurs create
+    </div>
+    <div class="panel-body">
+        @using (Ajax.BeginForm("Create", null,
+    ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikaz", OnSuccess = "SetTable" },
+     htmlAttributes: new { id = "kursForm" }))
+        {
+            { Html.RenderPartial("_KursEdit", Model); }
+        }
+        <p>
+            @Ajax.ActionLink(" ", "Prikaz", "Kursevi",
+                            routeValues: new { id = Model.KursTipID },
+                      ajaxOptions: new AjaxOptions { UpdateTargetId = "kursPrikaz", OnSuccess = "SetTable" },
+                         htmlAttributes: new { @class = "glyphicon glyphicon-th-list", style = "font-size:20px", title = "Back to list" })
+        </p>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $.validator.unobtrusive.parse("#kursForm");
+    });
+</script>

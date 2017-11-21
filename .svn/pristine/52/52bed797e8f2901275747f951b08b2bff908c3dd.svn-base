@@ -1,0 +1,62 @@
+﻿@model List<CZE.Web.Areas.Osoba.Models.OsobaLessDetailsVM>
+@{
+    ViewBag.Title = "OsobeZaPromoteAll";
+    Layout = "~/Views/Shared/_SB_Admin2.cshtml";
+    CZE.Web.Helper.InfoMessage InfoMessage = ViewBag.InfoMessage;
+}
+
+<h2>Promocija zahtjeva za prijavu</h2>
+<hr />
+@if (InfoMessage != null)
+{
+    <div class='alert alert-@InfoMessage.Tip alert-dismissable'>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <strong>@InfoMessage.Message</strong>
+        <br />
+    </div>
+}
+
+<div class="btn-group">
+
+    <a class="btn btn-primary" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#osobeAjax"
+       href="~/AdministrativniRadnik/AdministrativniRadnik/PromoteOsobeAllList">
+        <span class="glyphicon glyphicon-filter"></span>
+        All
+        <span class="badge"> @Model.Count  </span>
+    </a>
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+    </button>
+
+    <ul class="dropdown-menu">
+        <li>
+
+            @Ajax.ActionLink("Kandidat", "PromoteOsobeToKandidatList", new AjaxOptions()
+            {
+                HttpMethod = "GET",
+                UpdateTargetId = "osobeAjax",
+                InsertionMode = InsertionMode.Replace
+            })
+        </li>
+        <li>
+
+            @Ajax.ActionLink("Zaposlenik", "PromoteOsobeToZaposlenikList", new AjaxOptions()
+            {
+                HttpMethod = "GET",
+                UpdateTargetId = "osobeAjax",
+                InsertionMode = InsertionMode.Replace
+            })
+        </li>
+    </ul>
+</div>
+
+
+<div id="osobeAjax">
+    @Html.Partial("_PromoteOsobeTable", Model)
+</div>
+
+@section JavaScriptFiles
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}

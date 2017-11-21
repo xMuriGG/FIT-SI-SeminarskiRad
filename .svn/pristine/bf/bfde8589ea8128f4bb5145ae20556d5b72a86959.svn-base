@@ -1,0 +1,29 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using CZE.Data.Models;
+using System.Web.Mvc;
+namespace CZE.Web.Areas.AdministrativniRadnik.Models
+{
+    public class KursKategorijaVM
+    {
+        public int KursKategorijaID { get; set; }
+        [Required(ErrorMessage="Naziv kategorije kursa je obavezno polje.")]
+        public string Naziv { get; set; }
+
+        public List<KursKategorija> KursKategorije { get; set; }
+        public static List<SelectListItem> KursKategorijeDDLSet(List<KursKategorija> KursKategorije,int kursKategorijaID=0)
+        {
+            return KursKategorije.Select(s => new SelectListItem
+            {
+                Value = s.KursKategorijaID.ToString(),
+                Text = s.Naziv,
+                Selected=s.KursKategorijaID==kursKategorijaID
+            }).ToList();
+        }
+        public KursKategorija ToKursKategorija()
+        {
+            return new KursKategorija() { Naziv = this.Naziv };
+        }
+    }
+}

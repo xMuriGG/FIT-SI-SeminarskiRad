@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace CZE.Web.Areas.AdministrativniRadnik.Models
+{
+    public class GrupeKandidatiTableVM
+    {
+        public int GrupaKandidatiID { get; set; }
+        [Display(Name="Grupa")]
+        public string GrupaNaziv { get; set; }
+         [Display(Name = "Kurs")]
+        public string KursNaziv { get; set; }
+         [Display(Name = "Tip")]
+         public string TipNaziv { get; set; }
+         [Display(Name = "Predavač")]
+        public string Predavac { get; set; }
+         [Display(Name = "Uplačeno")]
+        public string Uplaceno { get; set; }
+         [Display(Name = "Otplačeno")]
+        public bool StatusUplate { get; set; }
+    }
+}

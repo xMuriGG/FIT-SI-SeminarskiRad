@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+
+namespace CZE.Data.Models
+{
+    [Table("KorisnickiNalozi")]
+   public class KorisnickiNalog
+    {
+        [Key()]
+        [ForeignKey("Osoba")]
+        public int KorisnickiNalogID { get; set; }
+        public virtual  Osoba Osoba { get; set; }
+        public string KorisnickoIme { get; set; }
+        public string Lozinka { get; set; }
+        public bool Aktivan { get; set; }
+        public UlogaKorisnika.UlogeKorisnika UlogaKorisnika { get; set; }
+
+        public KorisnickiNalog()
+        {
+            Aktivan = true;
+        }
+    }
+
+    public static class UlogaKorisnika
+    {
+        public enum UlogeKorisnika { Administrator,Direktor,Administrativni_Radnik,Predavac,Kandidat}
+
+        public static SelectList GetUlogeKorisnika(UlogeKorisnika selectedUlogaKorisnika=UlogeKorisnika.Kandidat)
+        {
+            IEnumerable<UlogeKorisnika> tipovi = Enum.GetValues(typeof(UlogeKorisnika)).Cast<UlogeKorisnika>();
+
+
+            return new SelectList(tipovi, selectedUlogaKorisnika);
+        }
+    }
+}
